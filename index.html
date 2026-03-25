@@ -709,7 +709,7 @@ const CATS={
      ien:['AI assistants','Predictive analytics','Recommendation systems','Content generation','Behavior analysis'],
      hrs:14,plo:2000,phi:4000},
     {id:'support',icon:'📞',he:'תמיכת לקוחות',en:'Customer Support & Service',
-     ihe:['מערכת כרטיסים','צ׳אטבוטים','ניתוח שיחות','איסוף פידבק','ניתוח סנטימנט'],
+     ihe:['מערכת כרטיסים','צ\'אטבוטים','ניתוח שיחות','איסוף פידבק','ניתוח סנטימנט'],
      ien:['Ticketing systems','Chatbots','Call analysis','Feedback collection','Sentiment analysis'],
      hrs:12,plo:1600,phi:3200},
     {id:'fin',icon:'🧾',he:'פיננסים וחיוב',en:'Finance & Billing',
@@ -1115,7 +1115,7 @@ function openCatModal(id){
     <div class="mblk"><div class="mlbl">${lang==='he'?'מה כלול':'What\'s included'}</div><div class="cmo-feats">${items}</div></div>
     <div style="display:flex;justify-content:center;gap:12px;margin-top:18px;flex-wrap:wrap;">
       <button class="btn-sub" style="max-width:220px;padding:11px 20px;font-size:14px;" id="modal-fav-btn" onclick="toggleFavFromModal('${c.id}')">${favs.includes(c.id)?(lang==='he'?'⭐ נשמר':'⭐ Saved'):(lang==='he'?'☆ שמור למועדפים':'☆ Save to favorites')}</button>
-    </div>\`;
+    </div>`;
   document.getElementById('cat-ov').classList.add('show');
   document.body.style.overflow='hidden';
 }

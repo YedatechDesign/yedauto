@@ -26,14 +26,14 @@ body{font-family:'Heebo',sans-serif;color:var(--t1);overflow-x:hidden;cursor:non
 
 /* ══ SPLASH ══ */
 #splash{position:fixed;inset:0;z-index:9000;background:var(--db);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px;}
-#splash.done{animation:splashOut .9s ease forwards;}
+#splash.done{animation:splashOut .55s ease forwards;}
 @keyframes splashOut{0%{opacity:1;transform:scale(1)}60%{opacity:1;transform:scale(1.04)}100%{opacity:0;transform:scale(1.08);visibility:hidden;pointer-events:none}}
 .splash-text{font-size:clamp(64px,12vw,140px);font-weight:900;letter-spacing:-4px;
   background:linear-gradient(90deg,var(--b1) 0%,var(--b1) 5%,var(--b2) 35%,var(--b3) 50%,var(--b4) 58%,var(--b2) 70%,var(--b1) 95%,var(--b1) 100%);
   background-size:300% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  animation:stripeSwipe 1.6s cubic-bezier(.4,0,.2,1) forwards;}
+  animation:stripeSwipe 0.9s cubic-bezier(.4,0,.2,1) forwards;}
 @keyframes stripeSwipe{0%{background-position:140% 0}100%{background-position:-40% 0}}
-.splash-line{width:0;height:2px;background:linear-gradient(90deg,transparent,var(--b2),transparent);animation:lineGrow 1.2s .4s ease forwards;}
+.splash-line{width:0;height:2px;background:linear-gradient(90deg,transparent,var(--b2),transparent);animation:lineGrow 0.7s .25s ease forwards;}
 @keyframes lineGrow{to{width:min(400px,60vw)}}
 
 /* cursor is just a tiny dot via JS canvas-less */
@@ -270,8 +270,8 @@ header.scrolled{background:rgba(0,15,97,.94);}
 .mq-section::before,.mq-section::after{content:'';position:absolute;top:0;bottom:0;width:110px;z-index:2;pointer-events:none;}
 .mq-section::before{left:0;background:linear-gradient(to right,#000F61 0%,transparent 100%);}
 .mq-section::after{right:0;background:linear-gradient(to left,#000F61 0%,transparent 100%);}
-.mq-row{overflow:hidden;padding:5px 0;display:flex;}
-.mq-track{display:flex;gap:10px;width:max-content;will-change:transform;flex-wrap:nowrap;white-space:nowrap;}
+.mq-row{overflow:hidden;padding:5px 0;display:flex;direction:ltr;}
+.mq-track{display:flex;gap:10px;width:max-content;will-change:transform;flex-wrap:nowrap;white-space:nowrap;direction:ltr;}
 .mq-r1 .mq-track{animation:mq-rtl 36s linear infinite;}
 .mq-r2 .mq-track{animation:mq-ltr 28s linear infinite;}
 .mq-r3 .mq-track{animation:mq-rtl 44s linear infinite;}
@@ -337,7 +337,8 @@ header.scrolled{background:rgba(0,15,97,.94);}
 .fav-count{position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:var(--gold);color:#000;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;display:none;}
 .fav-count.show{display:flex;}
 /* star on browse cards */
-.acc-star{position:absolute;top:12px;left:12px;width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;transition:all .2s;opacity:0;}
+.acc-star{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;transition:all .2s;opacity:0;}
+[dir="rtl"] .acc-star{right:auto;left:12px;}
 .auto-cat-card:hover .acc-star{opacity:1;}
 .acc-star.starred{opacity:1;background:rgba(245,158,11,.2);border-color:rgba(245,158,11,.45);color:var(--gold);}
 .acc-star:hover{transform:scale(1.2);}
@@ -448,7 +449,7 @@ header.scrolled{background:rgba(0,15,97,.94);}
   <div class="sec-eye" style="padding:0 48px;max-width:1140px;margin:0 auto 8px;">
     <h2 class="sec-title"><span data-i18n="plat_title">מחברים כל פלטפורמה שתבחרו</span></h2>
   </div>
-  <div class="mq-section" id="mq-section">
+  <div class="mq-section" id="mq-section" dir="ltr">
     <div class="mq-row mq-r1"><div class="mq-track" id="mq1"></div></div>
     <div class="mq-row mq-r2"><div class="mq-track" id="mq2"></div></div>
     <div class="mq-row mq-r3"><div class="mq-track" id="mq3"></div></div>
@@ -784,9 +785,9 @@ function hideSplash(){
   setTimeout(()=>{s.style.display='none';},950);
 }
 // Try immediately on DOMContentLoaded after 2s
-document.addEventListener('DOMContentLoaded',()=>setTimeout(hideSplash,2200));
-// Safety net: always hide after 4s no matter what
-setTimeout(hideSplash,4000);
+document.addEventListener('DOMContentLoaded',()=>setTimeout(hideSplash,900));
+// Safety net: always hide after 2.5s no matter what
+setTimeout(hideSplash,2500);
 
 
 /* ══════════════════════════════════════════════
@@ -797,64 +798,126 @@ setTimeout(hideSplash,4000);
   if(!c)return;
   const ctx=c.getContext('2d');
   let W,H,t=0;
-  const resize=()=>{W=c.width=c.parentElement.offsetWidth||innerWidth;H=c.height=c.parentElement.offsetHeight||innerHeight;};
-  resize();window.addEventListener('resize',resize);
-  // Wave grid params
-  const COLS=18,ROWS=12;
+  // Particles
+  let particles=[];
+  const resize=()=>{
+    W=c.width=c.parentElement.offsetWidth||innerWidth;
+    H=c.height=c.parentElement.offsetHeight||innerHeight;
+    initParticles();
+  };
+  function initParticles(){
+    particles=[];
+    const count=Math.floor(W*H/14000);
+    for(let i=0;i<count;i++){
+      particles.push({
+        x:Math.random()*W, y:Math.random()*H,
+        vx:(Math.random()-.5)*0.25, vy:(Math.random()-.5)*0.2,
+        r:Math.random()*1.8+0.4,
+        alpha:Math.random()*0.5+0.15,
+        col:Math.random()>0.5?'118,164,249':'40,112,246',
+        phase:Math.random()*Math.PI*2,
+      });
+    }
+  }
+  resize();
+  window.addEventListener('resize',resize);
+
+  // Aurora blobs — large slow-moving colour masses
+  const blobs=[
+    {cx:0.18,cy:0.28,rx:0.42,ry:0.32,rot:0,speed:0.0008,col:'10,89,235',a:0.12},
+    {cx:0.78,cy:0.18,rx:0.38,ry:0.28,rot:1.2,speed:0.0006,col:'64,75,136',a:0.10},
+    {cx:0.52,cy:0.72,rx:0.45,ry:0.30,rot:0.5,speed:0.0007,col:'40,112,246',a:0.09},
+    {cx:0.88,cy:0.65,rx:0.30,ry:0.26,rot:2.0,speed:0.0009,col:'7,59,157',a:0.08},
+    {cx:0.12,cy:0.75,rx:0.34,ry:0.28,rot:3.1,speed:0.0005,col:'118,164,249',a:0.07},
+  ];
+
+  function drawBlob(b,t){
+    const cx=W*(b.cx+Math.sin(t*b.speed*600)*0.07);
+    const cy=H*(b.cy+Math.cos(t*b.speed*480)*0.06);
+    const rx=W*b.rx*(0.9+Math.sin(t*b.speed*400)*0.1);
+    const ry=H*b.ry*(0.9+Math.cos(t*b.speed*350)*0.1);
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(b.rot+t*b.speed);
+    const g=ctx.createRadialGradient(0,0,0,0,0,Math.max(rx,ry));
+    g.addColorStop(0,`rgba(${b.col},${b.a})`);
+    g.addColorStop(0.5,`rgba(${b.col},${b.a*0.5})`);
+    g.addColorStop(1,`rgba(${b.col},0)`);
+    ctx.scale(rx/Math.max(rx,ry),ry/Math.max(rx,ry));
+    ctx.fillStyle=g;
+    ctx.beginPath();ctx.arc(0,0,Math.max(rx,ry),0,Math.PI*2);ctx.fill();
+    ctx.restore();
+  }
+
+  // Hex grid
+  function drawHex(x,y,size,alpha){
+    ctx.beginPath();
+    for(let i=0;i<6;i++){
+      const a=Math.PI/3*i-Math.PI/6;
+      const px=x+size*Math.cos(a),py=y+size*Math.sin(a);
+      i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
+    }
+    ctx.closePath();
+    ctx.strokeStyle=`rgba(79,142,247,${alpha})`;
+    ctx.lineWidth=0.6;
+    ctx.stroke();
+  }
+
   function draw(){
-    t+=0.006;
+    t+=0.012;
     ctx.clearRect(0,0,W,H);
-    const cw=W/COLS,ch=H/ROWS;
-    // Draw flowing wave mesh
-    for(let row=0;row<=ROWS;row++){
-      ctx.beginPath();
-      for(let col=0;col<=COLS;col++){
-        const x=col*cw;
-        const wave1=Math.sin(col*0.4+t*1.2)*18;
-        const wave2=Math.sin(row*0.5+t*0.8)*12;
-        const wave3=Math.cos((col+row)*0.3+t)*8;
-        const y=row*ch+wave1+wave2+wave3;
-        const alpha=0.04+Math.sin(col*0.3+row*0.4+t*0.7)*0.025;
-        if(col===0){ctx.moveTo(x,y);}else{ctx.lineTo(x,y);}
+
+    // 1. Aurora blobs (background glow)
+    blobs.forEach(b=>drawBlob(b,t));
+
+    // 2. Hex grid — scrolling with slight wave deformation
+    const S=64; // hex size
+    const HH=S*Math.sqrt(3);
+    const cols=Math.ceil(W/S/1.5)+3;
+    const rows=Math.ceil(H/HH)+3;
+    for(let row=-1;row<rows;row++){
+      for(let col=-1;col<cols;col++){
+        const offX=col%2===0?0:HH/2;
+        const bx=col*S*1.5;
+        const by=row*HH+offX;
+        const wave=Math.sin(bx/W*Math.PI*2+t*0.6)*12+Math.cos(by/H*Math.PI*1.5+t*0.4)*8;
+        const hx=bx+wave*0.3;
+        const hy=by+wave;
+        const distC=Math.hypot(hx-W/2,hy-H/2)/Math.max(W,H);
+        const alpha=0.028*(1-distC*1.2)+Math.sin(t*0.5+bx/100)*0.008;
+        if(alpha>0.005)drawHex(hx,hy,S*0.46,Math.max(0,alpha));
       }
-      const alpha=0.035+row/ROWS*0.02;
-      ctx.strokeStyle=`rgba(118,164,249,${alpha})`;
-      ctx.lineWidth=0.8;
-      ctx.stroke();
     }
-    // Vertical flowing lines
-    for(let col=0;col<=COLS;col++){
-      ctx.beginPath();
-      for(let row=0;row<=ROWS;row++){
-        const x=col*cw+Math.sin(row*0.45+t*1.1)*14+Math.cos(t*0.7+col*0.3)*8;
-        const y=row*ch;
-        const alpha=0.03+Math.cos(col*0.35+t*0.6)*0.018;
-        if(row===0){ctx.moveTo(x,y);}else{ctx.lineTo(x,y);}
+
+    // 3. Floating particles with connections
+    particles.forEach((p,i)=>{
+      p.x+=p.vx+Math.sin(t*0.4+p.phase)*0.15;
+      p.y+=p.vy+Math.cos(t*0.35+p.phase)*0.12;
+      if(p.x<-10)p.x=W+10; if(p.x>W+10)p.x=-10;
+      if(p.y<-10)p.y=H+10; if(p.y>H+10)p.y=-10;
+      const a=p.alpha*(0.8+Math.sin(t*0.8+p.phase)*0.2);
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${p.col},${a})`;ctx.fill();
+      // connect close particles
+      for(let j=i+1;j<particles.length;j++){
+        const q=particles[j];
+        const d=Math.hypot(p.x-q.x,p.y-q.y);
+        if(d<90){
+          ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
+          ctx.strokeStyle=`rgba(79,142,247,${0.07*(1-d/90)})`;
+          ctx.lineWidth=0.5;ctx.stroke();
+        }
       }
-      const alpha=0.03+col/COLS*0.018;
-      ctx.strokeStyle=`rgba(79,142,247,${alpha})`;
-      ctx.lineWidth=0.7;
-      ctx.stroke();
-    }
-    // Glowing orbs that float
-    const orbs=[
-      {x:0.15,y:0.2,r:180,phase:0},
-      {x:0.8,y:0.15,r:140,phase:2.1},
-      {x:0.5,y:0.75,r:160,phase:4.2},
-      {x:0.9,y:0.7,r:120,phase:1.5},
-      {x:0.08,y:0.8,r:130,phase:3.3},
-    ];
-    orbs.forEach(o=>{
-      const px=W*(o.x+Math.sin(t*0.4+o.phase)*0.06);
-      const py=H*(o.y+Math.cos(t*0.35+o.phase)*0.05);
-      const pulse=0.06+Math.sin(t*0.8+o.phase)*0.03;
-      const g=ctx.createRadialGradient(px,py,0,px,py,o.r);
-      g.addColorStop(0,`rgba(40,112,246,${pulse})`);
-      g.addColorStop(0.5,`rgba(10,89,235,${pulse*0.4})`);
-      g.addColorStop(1,'rgba(0,15,97,0)');
-      ctx.fillStyle=g;
-      ctx.beginPath();ctx.arc(px,py,o.r,0,Math.PI*2);ctx.fill();
     });
+
+    // 4. Slow horizontal light beam sweep
+    const bx=(Math.sin(t*0.18)*0.6+0.5)*W;
+    const bg=ctx.createLinearGradient(bx-200,0,bx+200,0);
+    bg.addColorStop(0,'rgba(118,164,249,0)');
+    bg.addColorStop(0.5,'rgba(118,164,249,0.04)');
+    bg.addColorStop(1,'rgba(118,164,249,0)');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
     requestAnimationFrame(draw);
   }
   draw();

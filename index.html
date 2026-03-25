@@ -10,7 +10,7 @@
 :root{
   --db:#000F61; --nb:#0A59EB; --b1:#073B9D; --b2:#2870F6; --b3:#76A4F9; --b4:#C4D8FD;
   --pb:#404B88; --dark:#1B1B1E; --muted:#A1A5C0; --light:#E8EAF5; --white:#F6F9FF;
-  --gold:#F59E0B; --green:#10B981; --red:#EF4444; --purple:#8B5CF6;
+  --gold:#F59E0B; --green:#10B981; --red:#EF4444; --purple:#8B5CF6; --teal:#06B6D4;
   --t1:#fff; --t2:rgba(255,255,255,.72); --t3:rgba(255,255,255,.42); --t4:rgba(255,255,255,.13);
   --card:rgba(255,255,255,.05); --bdr:rgba(255,255,255,.09);
 }
@@ -472,7 +472,7 @@ body[data-mode="colleges"] .mq-section::after{background:linear-gradient(to left
 </section>
 
 <!-- ══ CAT DETAIL MODAL ══ -->
-<div class="ov" id="cat-ov" id="cat-ov">
+<div class="ov" id="cat-ov">
   <div class="mdl" style="max-width:560px;">
     <div class="mt"><button class="mc" onclick="closeCatModal()">✕</button><div class="cmo-head"><div class="cmo-ico" id="cmo-ico"></div><div><div class="cmo-title" id="cmo-title"></div><div class="cmo-sub" id="cmo-sub"></div></div></div></div>
     <div class="mbd" id="cmo-body"></div>
@@ -763,13 +763,16 @@ let wch1=null, wch2=null;
 /* ══════════════════════════════════════════════
    SPLASH
 ══════════════════════════════════════════════ */
-window.addEventListener('load',()=>{
-  setTimeout(()=>{
-    const s=document.getElementById('splash');
-    s.classList.add('done');
-    setTimeout(()=>s.style.display='none',1000);
-  },2400);
-});
+function hideSplash(){
+  const s=document.getElementById('splash');
+  if(!s||s.style.display==='none')return;
+  s.classList.add('done');
+  setTimeout(()=>{s.style.display='none';},950);
+}
+// Try immediately on DOMContentLoaded after 2s
+document.addEventListener('DOMContentLoaded',()=>setTimeout(hideSplash,2200));
+// Safety net: always hide after 4s no matter what
+setTimeout(hideSplash,4000);
 
 /* ══════════════════════════════════════════════
    DOT CURSOR (minimalist)

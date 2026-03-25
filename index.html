@@ -20,10 +20,8 @@ body{font-family:'Heebo',sans-serif;color:var(--t1);overflow-x:hidden;cursor:non
 
 /* ══ PAGE BG (animated tint) ══ */
 #page-bg{position:fixed;inset:0;z-index:-2;background:var(--db);transition:background 1.4s ease;}
-#mesh-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;transition:opacity 1.4s;
-  background:radial-gradient(ellipse 90% 60% at 10% 5%,rgba(10,89,235,.2) 0%,transparent 55%),
-             radial-gradient(ellipse 60% 50% at 85% 15%,rgba(40,112,246,.12) 0%,transparent 50%),
-             radial-gradient(ellipse 70% 40% at 50% 90%,rgba(118,164,249,.1) 0%,transparent 55%);}
+#mesh-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;}
+#hero-canvas{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.7;}
 #mode-overlay{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity 1.4s;}
 
 /* ══ SPLASH ══ */
@@ -246,7 +244,9 @@ header.scrolled{background:rgba(0,15,97,.94);}
 .mbl{margin-bottom:20px;}.mbl:last-child{margin-bottom:0;}
 .mlbl{font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:9px;}
 .pb{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:12px;padding:14px 16px;font-size:13px;color:var(--t2);line-height:1.75;}
-.pb::before{content:'⚡ הבעיה:';display:block;font-size:10px;font-weight:900;color:var(--gold);margin-bottom:6px;letter-spacing:.5px;}
+.pb-lbl,.sb-lbl{font-size:10px;font-weight:900;display:block;margin-bottom:6px;letter-spacing:.5px;}
+.pb-lbl{color:var(--gold);}
+.sb-lbl{color:var(--green);}
 .sb{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);border-radius:12px;padding:14px 16px;font-size:13px;color:var(--t2);line-height:1.75;}
 .sb::before{content:'✅ הפתרון:';display:block;font-size:10px;font-weight:900;color:var(--green);margin-bottom:6px;letter-spacing:.5px;}
 
@@ -270,8 +270,8 @@ header.scrolled{background:rgba(0,15,97,.94);}
 .mq-section::before,.mq-section::after{content:'';position:absolute;top:0;bottom:0;width:110px;z-index:2;pointer-events:none;}
 .mq-section::before{left:0;background:linear-gradient(to right,#000F61 0%,transparent 100%);}
 .mq-section::after{right:0;background:linear-gradient(to left,#000F61 0%,transparent 100%);}
-.mq-row{overflow:hidden;padding:5px 0;}
-.mq-track{display:flex;gap:10px;width:max-content;will-change:transform;}
+.mq-row{overflow:hidden;padding:5px 0;display:flex;}
+.mq-track{display:flex;gap:10px;width:max-content;will-change:transform;flex-wrap:nowrap;white-space:nowrap;}
 .mq-r1 .mq-track{animation:mq-rtl 36s linear infinite;}
 .mq-r2 .mq-track{animation:mq-ltr 28s linear infinite;}
 .mq-r3 .mq-track{animation:mq-rtl 44s linear infinite;}
@@ -324,12 +324,47 @@ header.scrolled{background:rgba(0,15,97,.94);}
 .cmo-title{font-size:20px;font-weight:900;letter-spacing:-.4px;margin-bottom:3px;}
 .cmo-sub{font-size:12px;color:var(--t3);}
 .cmo-prob{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:13px;padding:16px 20px;font-size:15px;color:rgba(255,255,255,.88);line-height:1.8;margin-bottom:12px;}
-.cmo-prob::before{content:'⚡ הבעיה:';display:block;font-size:10px;font-weight:900;color:var(--gold);margin-bottom:7px;letter-spacing:.5px;}
+.cmo-prob-lbl{font-size:10px;font-weight:900;color:var(--gold);display:block;margin-bottom:7px;letter-spacing:.5px;}
 .cmo-sol{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);border-radius:13px;padding:16px 20px;font-size:15px;color:rgba(255,255,255,.88);line-height:1.8;margin-bottom:14px;}
-.cmo-sol::before{content:'✅ הפתרון שלנו:';display:block;font-size:10px;font-weight:900;color:var(--green);margin-bottom:7px;letter-spacing:.5px;}
+.cmo-sol-lbl{font-size:10px;font-weight:900;color:var(--green);display:block;margin-bottom:7px;letter-spacing:.5px;}
 .cmo-feats{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px;}
 .cmo-feat{padding:5px 13px;border-radius:17px;font-size:12px;font-weight:600;background:rgba(40,112,246,.1);border:1px solid rgba(40,112,246,.2);color:var(--b3);}
 @media(max-width:900px){.cm-card{grid-template-columns:1fr;padding:32px 22px;gap:28px;}.cm-wrap{padding:0 20px 60px;}}
+
+/* ══ FAVORITES ══ */
+.fav-btn-header{display:flex;align-items:center;gap:6px;padding:7px 16px;border-radius:20px;font-family:'Heebo',sans-serif;font-size:13px;font-weight:600;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:var(--gold);cursor:pointer;transition:all .2s;position:relative;}
+.fav-btn-header:hover{background:rgba(245,158,11,.2);transform:translateY(-1px);}
+.fav-count{position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:var(--gold);color:#000;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;display:none;}
+.fav-count.show{display:flex;}
+/* star on browse cards */
+.acc-star{position:absolute;top:12px;left:12px;width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;transition:all .2s;opacity:0;}
+.auto-cat-card:hover .acc-star{opacity:1;}
+.acc-star.starred{opacity:1;background:rgba(245,158,11,.2);border-color:rgba(245,158,11,.45);color:var(--gold);}
+.acc-star:hover{transform:scale(1.2);}
+/* star on wizard cards */
+.acard-info-btn{position:absolute;bottom:10px;right:8px;width:24px;height:24px;border-radius:6px;background:rgba(79,142,247,.15);border:1px solid rgba(79,142,247,.25);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;transition:all .2s;color:var(--b3);}
+.acard-info-btn:hover{background:rgba(79,142,247,.3);transform:scale(1.15);}
+/* favorites panel */
+.fav-panel{display:none;position:fixed;top:60px;right:16px;z-index:400;width:340px;background:#000D50;border:1px solid rgba(40,112,246,.3);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:mi .25s cubic-bezier(.34,1.56,.64,1);}
+.fav-panel.show{display:block;}
+.fav-panel-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.08);}
+.fav-panel-head h4{font-size:14px;font-weight:800;}
+.fav-panel-close{width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,.07);border:none;color:var(--t3);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.fav-panel-close:hover{background:rgba(255,255,255,.14);color:#fff;}
+.fav-list{max-height:320px;overflow-y:auto;padding:10px;}
+.fav-list::-webkit-scrollbar{width:3px;}.fav-list::-webkit-scrollbar-thumb{background:rgba(79,142,247,.3);border-radius:3px;}
+.fav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;margin-bottom:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);transition:all .18s;}
+.fav-item:hover{background:rgba(40,112,246,.1);border-color:rgba(40,112,246,.25);}
+.fav-item-ico{font-size:18px;flex-shrink:0;}
+.fav-item-name{font-size:13px;font-weight:600;color:var(--t2);flex:1;}
+.fav-item-rm{width:22px;height:22px;border-radius:5px;border:none;background:rgba(239,68,68,.1);color:var(--red);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.fav-item-rm:hover{background:rgba(239,68,68,.25);}
+.fav-panel-footer{padding:12px 14px;border-top:1px solid rgba(255,255,255,.08);}
+.fav-build-btn{width:100%;padding:11px;border-radius:11px;background:linear-gradient(135deg,var(--b1),var(--b2));border:none;font-family:'Heebo',sans-serif;font-size:14px;font-weight:800;color:#fff;cursor:pointer;transition:all .2s;box-shadow:0 4px 18px rgba(10,89,235,.35);}
+.fav-build-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(40,112,246,.5);}
+.fav-empty{padding:24px;text-align:center;color:var(--t3);font-size:13px;}
+[dir="ltr"] .fav-panel{right:auto;left:16px;}
+[dir="ltr"] .fav-count{right:auto;left:-6px;}
 </style>
 </head>
 <body>
@@ -355,13 +390,23 @@ header.scrolled{background:rgba(0,15,97,.94);}
   <nav class="header-nav">
     <button class="hn" onclick="setMode('companies')"><span data-i18n="nav_co">🏢 חברות</span></button>
     <button class="hn" onclick="setMode('colleges')"><span data-i18n="nav_ed">🎓 מכללות</span></button>
-    <button class="hn" onclick="openCustom()"><span data-i18n="nav_idea">💡 רעיון משלכם</span></button>
+    <button class="fav-btn-header" id="fav-btn" onclick="toggleFavPanel()">⭐ <span id="fav-btn-label" data-i18n="fav_label">מועדפים</span><span class="fav-count" id="fav-count">0</span></button>
     <button class="hn accent" onclick="openContact()"><span data-i18n="nav_contact">✉️ השאירו פרטים</span></button>
   </nav>
 </header>
+<!-- ══ FAVORITES PANEL ══ -->
+<div class="fav-panel" id="fav-panel">
+  <div class="fav-panel-head">
+    <h4>⭐ <span data-i18n="fav_title">אוטומציות שמורות</span></h4>
+    <button class="fav-panel-close" onclick="toggleFavPanel()">✕</button>
+  </div>
+  <div class="fav-list" id="fav-list"><div class="fav-empty" data-i18n="fav_empty">עוד לא שמרתם אוטומציות</div></div>
+  <div class="fav-panel-footer"><button class="fav-build-btn" onclick="buildFromFavs()" data-i18n="fav_build">🚀 בנו חבילה מהמועדפים</button></div>
+</div>
 
 <!-- ══ HERO ══ -->
 <section id="s-hero">
+  <canvas id="hero-canvas"></canvas>
   <div style="position:relative;z-index:2;">
     <h1><span data-i18n="h1a">הטכנולוגיה עובדת —</span><br><span class="grad" data-i18n="h1b">אתם מתמקדים בצמיחה</span></h1>
     <p class="hero-sub" data-i18n="hero_sub">אנחנו בונים אוטומציות חכמות שחוסכות עשרות שעות בחודש.<br>בחרו את הארגון שלכם כדי לראות את הפתרונות הרלוונטיים.</p>
@@ -553,7 +598,7 @@ const T={
     kicker:'n8n · Claude AI · Supabase · 40+ אינטגרציות',
     h1a:'הטכנולוגיה עובדת —',h1b:'אתם מתמקדים בצמיחה',
     hero_sub:'אנחנו בונים אוטומציות חכמות שחוסכות עשרות שעות בחודש.\nבחרו את הארגון שלכם כדי לראות פתרונות רלוונטיים.',
-    nav_co:'🏢 חברות',nav_ed:'🎓 מכללות',nav_idea:'💡 רעיון משלכם',nav_contact:'✉️ השאירו פרטים',
+    nav_co:'🏢 חברות',nav_ed:'🎓 מכללות',nav_contact:'✉️ השאירו פרטים',fav_label:'מועדפים',fav_title:'אוטומציות שמורות',fav_empty:'עוד לא שמרתם אוטומציות',fav_build:'🚀 בנו חבילה מהמועדפים',
     btn_co:'🏢 לחברות וארגונים',btn_ed:'🎓 למכללות ואוניברסיטאות',btn_all:'הצג הכל',
     wiz_btn:'בנו את חבילת האוטומציה שלכם',wiz_sub:'בנו את חבילת האוטומציה שלכם',
     s1:'חיסכון בזמן על משימות חוזרות',s2:'המערכת עובדת גם כשהצוות ישן',s3:'טעויות אנוש בתהליכים אוטומטיים',s4:'יותר לידים שמקבלים מענה בזמן',
@@ -591,7 +636,7 @@ const T={
     kicker:'n8n · Claude AI · Supabase · 40+ integrations',
     h1a:'Technology works —',h1b:'you focus on growth',
     hero_sub:'We build smart automations that save dozens of hours per month.\nChoose your organization type to see relevant solutions.',
-    nav_co:'🏢 Companies',nav_ed:'🎓 Colleges',nav_idea:'💡 Your idea',nav_contact:'✉️ Contact us',
+    nav_co:'🏢 Companies',nav_ed:'🎓 Colleges',nav_contact:'✉️ Contact us',fav_label:'Favorites',fav_title:'Saved Automations',fav_empty:'No saved automations yet',fav_build:'🚀 Build package from favorites',
     btn_co:'🏢 For Companies & Organizations',btn_ed:'🎓 For Colleges & Universities',btn_all:'Show All',
     wiz_btn:'Build your automation package',wiz_sub:'Build your automation package',
     s1:'Time saved on repetitive tasks',s2:'System runs even when your team sleeps',s3:'Human errors in automated processes',s4:'More leads getting instant response',
@@ -727,6 +772,7 @@ const PLATFORMS=['Gmail','Google Sheets','Google Drive','Google Meet','Google Fo
 ══════════════════════════════════════════════ */
 let lang='he', mode='all', wizType='companies', wizPicked=[], wizStep=1;
 let wch1=null, wch2=null;
+let favs=[];
 
 /* ══════════════════════════════════════════════
    SPLASH
@@ -741,6 +787,78 @@ function hideSplash(){
 document.addEventListener('DOMContentLoaded',()=>setTimeout(hideSplash,2200));
 // Safety net: always hide after 4s no matter what
 setTimeout(hideSplash,4000);
+
+
+/* ══════════════════════════════════════════════
+   HERO ANIMATED RELIEF BACKGROUND
+══════════════════════════════════════════════ */
+(function(){
+  const c=document.getElementById('hero-canvas');
+  if(!c)return;
+  const ctx=c.getContext('2d');
+  let W,H,t=0;
+  const resize=()=>{W=c.width=c.parentElement.offsetWidth||innerWidth;H=c.height=c.parentElement.offsetHeight||innerHeight;};
+  resize();window.addEventListener('resize',resize);
+  // Wave grid params
+  const COLS=18,ROWS=12;
+  function draw(){
+    t+=0.006;
+    ctx.clearRect(0,0,W,H);
+    const cw=W/COLS,ch=H/ROWS;
+    // Draw flowing wave mesh
+    for(let row=0;row<=ROWS;row++){
+      ctx.beginPath();
+      for(let col=0;col<=COLS;col++){
+        const x=col*cw;
+        const wave1=Math.sin(col*0.4+t*1.2)*18;
+        const wave2=Math.sin(row*0.5+t*0.8)*12;
+        const wave3=Math.cos((col+row)*0.3+t)*8;
+        const y=row*ch+wave1+wave2+wave3;
+        const alpha=0.04+Math.sin(col*0.3+row*0.4+t*0.7)*0.025;
+        if(col===0){ctx.moveTo(x,y);}else{ctx.lineTo(x,y);}
+      }
+      const alpha=0.035+row/ROWS*0.02;
+      ctx.strokeStyle=`rgba(118,164,249,${alpha})`;
+      ctx.lineWidth=0.8;
+      ctx.stroke();
+    }
+    // Vertical flowing lines
+    for(let col=0;col<=COLS;col++){
+      ctx.beginPath();
+      for(let row=0;row<=ROWS;row++){
+        const x=col*cw+Math.sin(row*0.45+t*1.1)*14+Math.cos(t*0.7+col*0.3)*8;
+        const y=row*ch;
+        const alpha=0.03+Math.cos(col*0.35+t*0.6)*0.018;
+        if(row===0){ctx.moveTo(x,y);}else{ctx.lineTo(x,y);}
+      }
+      const alpha=0.03+col/COLS*0.018;
+      ctx.strokeStyle=`rgba(79,142,247,${alpha})`;
+      ctx.lineWidth=0.7;
+      ctx.stroke();
+    }
+    // Glowing orbs that float
+    const orbs=[
+      {x:0.15,y:0.2,r:180,phase:0},
+      {x:0.8,y:0.15,r:140,phase:2.1},
+      {x:0.5,y:0.75,r:160,phase:4.2},
+      {x:0.9,y:0.7,r:120,phase:1.5},
+      {x:0.08,y:0.8,r:130,phase:3.3},
+    ];
+    orbs.forEach(o=>{
+      const px=W*(o.x+Math.sin(t*0.4+o.phase)*0.06);
+      const py=H*(o.y+Math.cos(t*0.35+o.phase)*0.05);
+      const pulse=0.06+Math.sin(t*0.8+o.phase)*0.03;
+      const g=ctx.createRadialGradient(px,py,0,px,py,o.r);
+      g.addColorStop(0,`rgba(40,112,246,${pulse})`);
+      g.addColorStop(0.5,`rgba(10,89,235,${pulse*0.4})`);
+      g.addColorStop(1,'rgba(0,15,97,0)');
+      ctx.fillStyle=g;
+      ctx.beginPath();ctx.arc(px,py,o.r,0,Math.PI*2);ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
 
 /* ══════════════════════════════════════════════
    DOT CURSOR (minimalist)
@@ -838,7 +956,9 @@ function renderAuto(){
     const name=lang==='he'?c.he:c.en;
     const items=(lang==='he'?c.ihe:c.ien).slice(0,5).map(it=>`<span class="acc-item">${it}</span>`).join('');
     const more=(lang==='he'?c.ihe:c.ien).length>5?`<span class="acc-item" style="opacity:.55">+${(lang==='he'?c.ihe:c.ien).length-5}...</span>`:'';
-    return`<div class="auto-cat-card reveal" onclick="openCatModal('${c.id}')" style="cursor:pointer;">
+    const starred=favs.includes(c.id);
+    return`<div class="auto-cat-card reveal" onclick="openCatModal('${c.id}')" style="cursor:pointer;position:relative;">
+      <button class="acc-star${starred?' starred':''}" onclick="event.stopPropagation();toggleFav('${c.id}')" title="${lang==='he'?'שמור למועדפים':'Save to favorites'}">${starred?'⭐':'☆'}</button>
       <div class="acc-head"><div class="acc-ico">${c.icon}</div><div><div class="acc-name">${name}</div><div class="acc-count">${(lang==='he'?c.ihe:c.ien).length} ${lang==='he'?'פתרונות':'solutions'} · ${lang==='he'?'לחצו לפרטים':'click for details'} →</div></div></div>
       <div class="acc-items">${items}${more}</div>
     </div>`;
@@ -984,20 +1104,89 @@ function openCatModal(id){
   const items=(lang==='he'?c.ihe:c.ien).map(it=>`<span class="cmo-feat">${it}</span>`).join('');
   const prob=lang==='he'?(d.prob_he||''):(d.prob_en||'');
   const sol=lang==='he'?(d.sol_he||''):(d.sol_en||'');
+  const probLabel=lang==='he'?'⚡ הבעיה:':'⚡ The Problem:';
+  const solLabel=lang==='he'?'✅ הפתרון שלנו:':'✅ Our Solution:';
   document.getElementById('cmo-ico').textContent=c.icon;
   document.getElementById('cmo-title').textContent=name;
   document.getElementById('cmo-sub').textContent=lang==='he'?c.he+' — '+c.ihe.length+' פתרונות':c.en+' — '+c.ien.length+' solutions';
   document.getElementById('cmo-body').innerHTML=`
-    ${prob?`<div class="cmo-prob">${prob}</div>`:''}
-    ${sol?`<div class="cmo-sol">${sol}</div>`:''}
+    ${prob?`<div class="cmo-prob"><span class="cmo-prob-lbl">${probLabel}</span>${prob}</div>`:''}
+    ${sol?`<div class="cmo-sol"><span class="cmo-sol-lbl">${solLabel}</span>${sol}</div>`:''}
     <div class="mblk"><div class="mlbl">${lang==='he'?'מה כלול':'What\'s included'}</div><div class="cmo-feats">${items}</div></div>
-    <div style="display:flex;justify-content:center;margin-top:18px;"><button class="btn-sub" style="max-width:300px;" onclick="closeCatModal();openWizard()">${lang==='he'?'🚀 הוסיפו לחבילה שלכם':'🚀 Add to your package'}</button></div>`;
+    <div style="display:flex;justify-content:center;gap:12px;margin-top:18px;flex-wrap:wrap;">
+      <button class="btn-sub" style="max-width:220px;padding:11px 20px;font-size:14px;" id="modal-fav-btn" onclick="toggleFavFromModal('${c.id}')">${favs.includes(c.id)?(lang==='he'?'⭐ נשמר':'⭐ Saved'):(lang==='he'?'☆ שמור למועדפים':'☆ Save to favorites')}</button>
+    </div>\`;
   document.getElementById('cat-ov').classList.add('show');
   document.body.style.overflow='hidden';
 }
 function closeCatModal(){document.getElementById('cat-ov').classList.remove('show');document.body.style.overflow='';}
 renderAuto();
 
+
+/* ══════════════════════════════════════════════
+   FAVORITES SYSTEM
+══════════════════════════════════════════════ */
+function toggleFav(id){
+  const idx=favs.indexOf(id);
+  if(idx>=0)favs.splice(idx,1);else favs.push(id);
+  updateFavUI();
+  renderAuto();
+}
+function toggleFavFromModal(id){
+  toggleFav(id);
+  // update button in modal if open
+  const btn=document.getElementById('modal-fav-btn');
+  if(btn){
+    const saved=favs.includes(id);
+    btn.textContent=saved?(lang==='he'?'⭐ נשמר':'⭐ Saved'):(lang==='he'?'☆ שמור למועדפים':'☆ Save to favorites');
+  }
+}
+function updateFavUI(){
+  const cnt=document.getElementById('fav-count');
+  if(cnt){cnt.textContent=favs.length;cnt.classList.toggle('show',favs.length>0);}
+  renderFavPanel();
+}
+function renderFavPanel(){
+  const list=document.getElementById('fav-list');
+  if(!list)return;
+  if(favs.length===0){
+    list.innerHTML=`<div class="fav-empty">${lang==='he'?'עוד לא שמרתם אוטומציות':'No saved automations yet'}</div>`;
+    return;
+  }
+  const all=[...CATS.companies,...CATS.colleges];
+  list.innerHTML=favs.map(id=>{
+    const c=all.find(x=>x.id===id);
+    if(!c)return'';
+    return`<div class="fav-item">
+      <div class="fav-item-ico">${c.icon}</div>
+      <div class="fav-item-name">${lang==='he'?c.he:c.en}</div>
+      <button class="fav-item-rm" onclick="toggleFav('${id}')" title="${lang==='he'?'הסר':'Remove'}">✕</button>
+    </div>`;
+  }).join('');
+}
+function toggleFavPanel(){
+  const panel=document.getElementById('fav-panel');
+  panel.classList.toggle('show');
+  if(panel.classList.contains('show'))renderFavPanel();
+}
+function buildFromFavs(){
+  if(favs.length===0)return;
+  document.getElementById('fav-panel').classList.remove('show');
+  // Open wizard at step 3 with favs as picked
+  wizPicked=[...favs];
+  wizType='other'; // use all cats
+  document.getElementById('wiz-ov').classList.add('show');
+  document.body.style.overflow='hidden';
+  goStep(3);
+}
+// Close fav panel when clicking outside
+document.addEventListener('click',e=>{
+  const panel=document.getElementById('fav-panel');
+  const btn=document.getElementById('fav-btn');
+  if(panel&&panel.classList.contains('show')&&!panel.contains(e.target)&&e.target!==btn&&!btn.contains(e.target)){
+    panel.classList.remove('show');
+  }
+});
 /* ══════════════════════════════════════════════
    WIZARD
 ══════════════════════════════════════════════ */
@@ -1027,11 +1216,12 @@ function pickType(type,el){
 function buildWizGrid(){
   const cats=wizType==='other'?[...CATS.companies,...CATS.colleges]:CATS[wizType];
   document.getElementById('wiz-grid').innerHTML=cats.map(c=>`
-    <div class="acard${wizPicked.includes(c.id)?' picked':''}" id="ac-${c.id}" onclick="toggleA('${c.id}')">
+    <div class="acard${wizPicked.includes(c.id)?' picked':''}" id="ac-${c.id}" onclick="toggleA('${c.id}')" style="position:relative;">
       <div class="ck"></div>
       <span class="ac-ic">${c.icon}</span>
       <div class="ac-n">${lang==='he'?c.he:c.en}</div>
       <div class="ac-t">~${c.hrs}h/${lang==='he'?'חודש':'mo'}</div>
+      <button class="acard-info-btn" onclick="event.stopPropagation();openCatModal('${c.id}')" title="${lang==='he'?'פרטים':'Details'}">ℹ</button>
     </div>`).join('');
   updateCnt();
 }
@@ -1047,7 +1237,8 @@ function updateCnt(){
   document.getElementById('btn3').disabled=wizPicked.length===0;
 }
 function buildResults(){
-  const sel=CATS[wizType].filter(c=>wizPicked.includes(c.id));
+  const allCats=wizType==='other'?[...CATS.companies,...CATS.colleges]:CATS[wizType];
+  const sel=allCats.filter(c=>wizPicked.includes(c.id));
   const hrs=sel.reduce((s,c)=>s+c.hrs,0);
   const plo=sel.reduce((s,c)=>s+c.plo,0);
   const phi=sel.reduce((s,c)=>s+c.phi,0);

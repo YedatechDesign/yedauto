@@ -16,7 +16,7 @@
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{font-family:'Heebo',sans-serif;color:var(--t1);overflow-x:hidden;cursor:none;min-height:100vh;}
+body{font-family:'Heebo',sans-serif;color:var(--t1);overflow-x:hidden;cursor:none;min-height:100vh;} #dot-cur{position:fixed;width:8px;height:8px;border-radius:50%;background:var(--b2);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:screen;opacity:.85;transition:transform .1s,background .2s;}
 
 /* ══ PAGE BG (animated tint) ══ */
 #page-bg{position:fixed;inset:0;z-index:-2;background:var(--db);transition:background 1.4s ease;}
@@ -38,9 +38,7 @@ body{font-family:'Heebo',sans-serif;color:var(--t1);overflow-x:hidden;cursor:non
 .splash-line{width:0;height:2px;background:linear-gradient(90deg,transparent,var(--b2),transparent);animation:lineGrow 1.2s .4s ease forwards;}
 @keyframes lineGrow{to{width:min(400px,60vw)}}
 
-/* ══ CANVASES ══ */
-#trail-c{position:fixed;inset:0;z-index:8999;pointer-events:none;}
-#plat-c{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.5;}
+/* cursor is just a tiny dot via JS canvas-less */
 
 /* ══ HEADER ══ */
 header{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:14px 52px;background:rgba(0,15,97,.6);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);transition:background .3s;}
@@ -60,9 +58,7 @@ header.scrolled{background:rgba(0,15,97,.94);}
 
 /* ══ HERO ══ */
 #s-hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 40px 80px;overflow:hidden;}
-/* Radial mask darkens center of hero so text reads cleanly */
-#s-hero::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:radial-gradient(ellipse 55% 52% at 50% 50%, rgba(0,15,97,.97) 0%, rgba(0,15,97,.88) 35%, rgba(0,15,97,.45) 60%, transparent 80%);}
+
 .hero-kicker{display:inline-flex;align-items:center;gap:8px;background:rgba(40,112,246,.12);border:1px solid rgba(40,112,246,.3);border-radius:30px;padding:7px 20px;font-size:13px;font-weight:700;color:var(--b3);letter-spacing:.7px;margin-bottom:28px;animation:fadeUp .8s ease both;}
 .blink{animation:blink 1.2s steps(1) infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
@@ -260,7 +256,6 @@ header.scrolled{background:rgba(0,15,97,.94);}
   #s-stats,#s-automations,#s-platforms,#s-custom,#s-cta{padding-left:20px;padding-right:20px;}
   .stats-grid{grid-template-columns:1fr 1fr;}
   .auto-cats-grid{grid-template-columns:1fr;}
-  .custom-card{flex-direction:column;padding:28px 22px;}
   .wb{padding:22px 18px 50px;}
   .tcards{grid-template-columns:1fr;}
   .rgrid{grid-template-columns:1fr;}
@@ -268,6 +263,103 @@ header.scrolled{background:rgba(0,15,97,.94);}
   .wsl{display:none;}.wsl2{width:28px;}
   body{cursor:auto;}.cursor-trail{display:none;}
 }
+
+/* ══ MODE COLORS — COMPANIES ══ */
+body[data-mode="companies"]{--t1:#000F61;--t2:rgba(0,15,97,.78);--t3:rgba(0,15,97,.48);--card:rgba(0,15,97,.07);--bdr:rgba(0,15,97,.14);}
+body[data-mode="companies"] header{background:rgba(56,182,255,.9) !important;border-bottom-color:rgba(0,15,97,.15);}
+body[data-mode="companies"] .logo{color:#000F61;}
+body[data-mode="companies"] .logo-dot{background:linear-gradient(135deg,#000F61,#073B9D);}
+body[data-mode="companies"] .hn{color:#000F61;background:rgba(0,15,97,.09);border-color:rgba(0,15,97,.2);}
+body[data-mode="companies"] .hn:hover{background:rgba(0,15,97,.18);color:#000F61;}
+body[data-mode="companies"] .hn.accent{background:#000F61 !important;border-color:transparent;color:#fff !important;}
+body[data-mode="companies"] .lang-btn{color:#000F61;border-color:rgba(0,15,97,.3);background:rgba(0,15,97,.1);}
+body[data-mode="companies"] .grad{background:linear-gradient(90deg,#000F61 0%,#073B9D 50%,#000F61 100%) !important;background-size:200% auto !important;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;}
+body[data-mode="companies"] .hero-kicker{background:rgba(0,15,97,.1);border-color:rgba(0,15,97,.25);color:#000F61;}
+body[data-mode="companies"] .mode-btn{color:rgba(0,15,97,.65);border-color:rgba(0,15,97,.18);background:rgba(0,15,97,.06);}
+body[data-mode="companies"] .wiz-hero-btn{background:linear-gradient(135deg,#000F61,#073B9D) !important;}
+body[data-mode="companies"] .sc{background:rgba(255,255,255,.3);}
+body[data-mode="companies"] .sn{background:linear-gradient(135deg,#000F61,#073B9D) !important;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;}
+body[data-mode="companies"] .sl{color:rgba(0,15,97,.55);}
+body[data-mode="companies"] .auto-cat-card{background:rgba(255,255,255,.25);border-color:rgba(0,15,97,.1);}
+body[data-mode="companies"] .acc-ico{background:linear-gradient(135deg,rgba(0,15,97,.14),rgba(7,59,157,.08));border-color:rgba(0,15,97,.18);}
+body[data-mode="companies"] .acc-item{background:rgba(0,15,97,.06);border-color:rgba(0,15,97,.1);color:rgba(0,15,97,.62);}
+body[data-mode="companies"] .acc-item:hover{background:rgba(0,15,97,.18);border-color:rgba(0,15,97,.3);color:#000F61;}
+body[data-mode="companies"] .btn-cta{background:linear-gradient(135deg,#000F61,#073B9D) !important;}
+body[data-mode="companies"] .eye-tag{background:rgba(0,15,97,.1);border-color:rgba(0,15,97,.2);color:#000F61;}
+body[data-mode="companies"] .sec-title::after{background:linear-gradient(90deg,transparent,#073B9D,transparent);}
+body[data-mode="companies"] .plat-pill{background:rgba(0,15,97,.08);border-color:rgba(0,15,97,.16);color:rgba(0,15,97,.6);}
+body[data-mode="companies"] .plat-pill:hover{background:rgba(0,15,97,.18);border-color:rgba(0,15,97,.38);color:#000F61;box-shadow:0 6px 18px rgba(0,15,97,.2);}
+/* ══ MODE COLORS — COLLEGES ══ */
+body[data-mode="colleges"] header{background:rgba(10,89,235,.75) !important;backdrop-filter:blur(22px);}
+/* ══ MARQUEE ══ */
+.mq-section{overflow:hidden;padding:6px 0 44px;position:relative;}
+.mq-section::before,.mq-section::after{content:'';position:absolute;top:0;bottom:0;width:110px;z-index:2;pointer-events:none;}
+.mq-section::before{left:0;background:linear-gradient(to right,#000F61 0%,transparent 100%);}
+.mq-section::after{right:0;background:linear-gradient(to left,#000F61 0%,transparent 100%);}
+body[data-mode="companies"] .mq-section::before{background:linear-gradient(to right,#38B6FF 0%,transparent 100%);}
+body[data-mode="companies"] .mq-section::after{background:linear-gradient(to left,#38B6FF 0%,transparent 100%);}
+body[data-mode="colleges"] .mq-section::before{background:linear-gradient(to right,#0A59EB 0%,transparent 100%);}
+body[data-mode="colleges"] .mq-section::after{background:linear-gradient(to left,#0A59EB 0%,transparent 100%);}
+.mq-row{overflow:hidden;padding:5px 0;}
+.mq-track{display:flex;gap:10px;width:max-content;will-change:transform;}
+.mq-r1 .mq-track{animation:mq-rtl 32s linear infinite;}
+.mq-r2 .mq-track{animation:mq-ltr 24s linear infinite;}
+.mq-r3 .mq-track{animation:mq-rtl 40s linear infinite;}
+.mq-row:hover .mq-track{animation-play-state:paused;}
+@keyframes mq-rtl{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes mq-ltr{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+.plat-pill{display:inline-flex;align-items:center;padding:8px 18px;border-radius:24px;background:rgba(255,255,255,.06);border:1px solid rgba(118,164,249,.2);color:rgba(196,216,253,.65);font-size:13px;font-weight:600;white-space:nowrap;cursor:default;transition:all .25s cubic-bezier(.34,1.56,.64,1);flex-shrink:0;}
+.plat-pill:hover{background:rgba(40,112,246,.22);border-color:rgba(118,164,249,.6);color:#fff;transform:scale(1.08) translateY(-3px);box-shadow:0 8px 24px rgba(40,112,246,.4);}
+/* ══ EXTRA EFFECTS ══ */
+.sec-title{display:inline-block;position:relative;}
+.sec-title::after{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:0;height:2px;background:linear-gradient(90deg,transparent,var(--b2),transparent);transition:width .9s .15s ease;}
+.reveal.visible .sec-title::after{width:70%;}
+.auto-cat-card{transition:all .32s cubic-bezier(.34,1.56,.64,1);}
+.auto-cat-card:hover{transform:translateY(-7px) scale(1.01);border-color:rgba(40,112,246,.4);box-shadow:0 22px 52px rgba(0,0,0,.36),0 0 0 1px rgba(40,112,246,.12);}
+.acc-item{transition:all .2s cubic-bezier(.34,1.56,.64,1);}
+.acc-item:hover{transform:scale(1.06) translateY(-1px);}
+@keyframes numPop{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
+.sc:hover .sn{animation:numPop .4s cubic-bezier(.34,1.56,.64,1);}
+.btn-cta{position:relative;overflow:hidden;}
+.btn-cta::after,.cm-btn::after,.wiz-hero-btn::after{content:'';position:absolute;top:0;left:-100%;width:55%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);pointer-events:none;animation:shimmer 3.5s 1s ease infinite;}
+@keyframes shimmer{0%{left:-100%}35%,100%{left:160%}}
+.auto-cat-card:nth-child(2){transition-delay:.04s;}
+.auto-cat-card:nth-child(3){transition-delay:.08s;}
+.auto-cat-card:nth-child(4){transition-delay:.12s;}
+.auto-cat-card:nth-child(5){transition-delay:.16s;}
+.auto-cat-card:nth-child(6){transition-delay:.2s;}
+/* ══ CUSTOM MARKETING SECTION ══ */
+.cm-wrap{padding:0 48px 70px;max-width:1140px;margin:0 auto;}
+.cm-card{background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(40,112,246,.07));border:1px solid rgba(139,92,246,.24);border-radius:24px;padding:50px 46px;display:grid;grid-template-columns:1.1fr .9fr;gap:44px;align-items:center;position:relative;overflow:hidden;}
+.cm-card::before{content:'';position:absolute;top:-100px;right:-100px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.14) 0%,transparent 70%);pointer-events:none;}
+.cm-card::after{content:'';position:absolute;bottom:-80px;left:-80px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(40,112,246,.1) 0%,transparent 70%);pointer-events:none;}
+.cm-text{position:relative;z-index:1;}
+.cm-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(139,92,246,.14);border:1px solid rgba(139,92,246,.28);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;color:var(--purple);letter-spacing:.6px;margin-bottom:16px;}
+.cm-text h2{font-size:clamp(20px,2.5vw,27px);font-weight:900;letter-spacing:-1px;margin-bottom:14px;line-height:1.25;}
+.cm-text h2 .gr{background:linear-gradient(90deg,var(--purple),var(--b2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.cm-text p{font-size:14px;color:var(--t2);line-height:1.82;margin-bottom:11px;}
+.cm-text p strong{color:var(--t1);}
+.cm-btn{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(135deg,var(--purple),var(--b2));border:none;border-radius:12px;padding:13px 28px;font-family:'Heebo',sans-serif;font-size:14px;font-weight:800;color:#fff;cursor:pointer;transition:all .22s;box-shadow:0 6px 22px rgba(139,92,246,.35);margin-top:16px;position:relative;overflow:hidden;}
+.cm-btn:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(139,92,246,.5);}
+.cm-examples{position:relative;z-index:1;display:flex;flex-direction:column;gap:10px;}
+.cm-ex{display:flex;align-items:flex-start;gap:13px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:15px 17px;transition:all .28s cubic-bezier(.34,1.56,.64,1);cursor:default;}
+.cm-ex:hover{background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.28);transform:translateX(-5px);}
+[dir="ltr"] .cm-ex:hover{transform:translateX(5px);}
+.cm-ex-ico{font-size:22px;flex-shrink:0;margin-top:2px;}
+.cm-ex-text strong{color:var(--t1);display:block;font-size:13px;font-weight:800;margin-bottom:3px;}
+.cm-ex-text span{font-size:12px;color:var(--t3);line-height:1.55;}
+/* ══ CAT DETAIL MODAL ══ */
+.cmo-head{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+.cmo-ico{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:27px;background:linear-gradient(135deg,rgba(40,112,246,.2),rgba(118,164,249,.13));border:1px solid rgba(40,112,246,.22);flex-shrink:0;}
+.cmo-title{font-size:20px;font-weight:900;letter-spacing:-.4px;margin-bottom:3px;}
+.cmo-sub{font-size:12px;color:var(--t3);}
+.cmo-prob{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:13px;padding:15px 17px;font-size:13px;color:var(--t2);line-height:1.75;margin-bottom:12px;}
+.cmo-prob::before{content:'⚡ הבעיה:';display:block;font-size:10px;font-weight:900;color:var(--gold);margin-bottom:7px;letter-spacing:.5px;}
+.cmo-sol{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);border-radius:13px;padding:15px 17px;font-size:13px;color:var(--t2);line-height:1.75;margin-bottom:14px;}
+.cmo-sol::before{content:'✅ הפתרון שלנו:';display:block;font-size:10px;font-weight:900;color:var(--green);margin-bottom:7px;letter-spacing:.5px;}
+.cmo-feats{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px;}
+.cmo-feat{padding:5px 13px;border-radius:17px;font-size:12px;font-weight:600;background:rgba(40,112,246,.1);border:1px solid rgba(40,112,246,.2);color:var(--b3);}
+@media(max-width:900px){.cm-card{grid-template-columns:1fr;padding:32px 22px;gap:28px;}.cm-wrap{padding:0 20px 60px;}}
 </style>
 </head>
 <body>
@@ -275,6 +367,7 @@ header.scrolled{background:rgba(0,15,97,.94);}
 <div id="page-bg"></div>
 <div id="mesh-bg"></div>
 <div id="mode-overlay"></div>
+<div id="dot-cur"></div>
 
 <!-- ══ SPLASH ══ -->
 <div id="splash">
@@ -282,8 +375,6 @@ header.scrolled{background:rgba(0,15,97,.94);}
   <div class="splash-line"></div>
 </div>
 
-<!-- ══ CURSOR TRAIL ══ -->
-<canvas id="trail-c"></canvas>
 
 <!-- ══ HEADER ══ -->
 <header id="hdr">
@@ -301,7 +392,6 @@ header.scrolled{background:rgba(0,15,97,.94);}
 
 <!-- ══ HERO ══ -->
 <section id="s-hero">
-  <canvas id="plat-c" style="position:absolute;inset:0;pointer-events:none;"></canvas>
   <div style="position:relative;z-index:2;">
     <div class="hero-kicker"><span class="blink">●</span> <span data-i18n="kicker">n8n · Claude AI · Supabase · 40+ integrations</span></div>
     <h1><span data-i18n="h1a">הטכנולוגיה עובדת —</span><br><span class="grad" data-i18n="h1b">אתם מתמקדים בצמיחה</span></h1>
@@ -342,30 +432,34 @@ header.scrolled{background:rgba(0,15,97,.94);}
 
 <!-- ══ PLATFORMS ══ -->
 <section id="s-platforms" class="reveal">
-  <div class="sec-eye">
+  <div class="sec-eye" style="padding:0 48px;max-width:1140px;margin:0 auto 8px;">
     <div class="eye-tag">🔗 <span data-i18n="plat_tag">חיבורים</span></div>
     <h2 class="sec-title"><span data-i18n="plat_title">מחברים כל פלטפורמה שתבחרו</span></h2>
-    <p class="sec-sub" data-i18n="plat_sub">אנחנו עובדים עם 40+ פלטפורמות ויכולים לחבר כמעט כל שניים ביניהן</p>
   </div>
-  <div class="plat-visual"><canvas id="plat-main-c" style="width:100%;height:100%;"></canvas></div>
-  <p class="plat-label" data-i18n="plat_label">הצבע על הקנבס לאינטראקציה</p>
+  <div class="mq-section" id="mq-section">
+    <div class="mq-row mq-r1"><div class="mq-track" id="mq1"></div></div>
+    <div class="mq-row mq-r2"><div class="mq-track" id="mq2"></div></div>
+    <div class="mq-row mq-r3"><div class="mq-track" id="mq3"></div></div>
+  </div>
 </section>
 
 <!-- ══ CUSTOM ══ -->
 <section id="s-custom" class="reveal">
-  <div class="custom-card">
-    <div class="custom-ico">💡</div>
-    <div class="custom-body">
-      <h3><span class="gr" data-i18n="cust_h">יש לכם רעיון משלכם?</span></h3>
-      <p data-i18n="cust_p">לא מצאתם מה שחיפשתם? ספרו לנו אילו פלטפורמות משתמשים בהן, אילו תהליכים חוזרים על עצמם — ואנחנו נחשוב יחד איך לאוטומט בצורה חכמה.</p>
-      <div class="custom-tags">
-        <span class="ctag" data-i18n="ct1">חיבור בין פלטפורמות</span>
-        <span class="ctag" data-i18n="ct2">תהליך ייחודי לעסק</span>
-        <span class="ctag" data-i18n="ct3">אינטגרציה עם מערכת קיימת</span>
-        <span class="ctag" data-i18n="ct4">דוחות אוטומטיים</span>
-        <span class="ctag" data-i18n="ct5">ניתוב חכם של מידע</span>
+  <div class="cm-wrap">
+    <div class="cm-card">
+      <div class="cm-text">
+        <div class="cm-badge">⚡ <span data-i18n="cm_badge">כל תהליך עסקי יכול להיות אוטומטי</span></div>
+        <h2><span class="gr" data-i18n="cm_h">יש לכם תהליך<br>שחוזר שוב ושוב?</span></h2>
+        <p data-i18n="cm_p1">מפיקים דוחות ידניים כל שבוע? שולחים עדכונים ל-30 אנשים במייל? מנהלים בקשות בוואטסאפ ואקסל? <strong data-i18n="cm_strong1">כל זה אפשר לאוטומט.</strong></p>
+        <p data-i18n="cm_p2">כל ארגון שונה — ולכן אנחנו לא מוכרים תבניות. אנחנו מקשיבים, מבינים את התהליכים שלכם, ובונים פתרון מותאם בדיוק לצרכים שלכם. בין אם זה חיבור בין פלטפורמות קיימות, יצירת דוחות אוטומטיים, הטמעת AI בתוך השגרה — אנחנו כאן לחשוב יחד.</p>
+        <button class="cm-btn" onclick="openContact()">💬 <span data-i18n="cm_btn">דברו איתנו — ייעוץ ראשוני ללא עלות</span></button>
       </div>
-      <button class="btn-custom" onclick="openCustom()">✉️ <span data-i18n="cust_btn">ספרו לנו על הרעיון</span></button>
+      <div class="cm-examples">
+        <div class="cm-ex"><div class="cm-ex-ico">📊</div><div class="cm-ex-text"><strong data-i18n="ce1t">דוחות שבועיים אוטומטיים</strong><span data-i18n="ce1d">במקום לאסוף נתונים ידנית מ-5 מקורות, המערכת מייצרת ומשלחת את הדוח לבד</span></div></div>
+        <div class="cm-ex"><div class="cm-ex-ico">🔔</div><div class="cm-ex-text"><strong data-i18n="ce2t">התראות חכמות בזמן אמת</strong><span data-i18n="ce2d">כשמשהו חריג קורה במערכות שלכם — אתם יודעים מיד, אוטומטית</span></div></div>
+        <div class="cm-ex"><div class="cm-ex-ico">🤝</div><div class="cm-ex-text"><strong data-i18n="ce3t">חיבור בין כלים שלא מדברים</strong><span data-i18n="ce3d">Monday + Gmail + WhatsApp + Google Sheets — כולם עובדים יחד בלי ידיים</span></div></div>
+        <div class="cm-ex"><div class="cm-ex-ico">🤖</div><div class="cm-ex-text"><strong data-i18n="ce4t">AI שמכיר את הארגון שלכם</strong><span data-i18n="ce4d">בוט פנימי שעונה על שאלות, מסכם מסמכים ומנתב בקשות בצורה חכמה</span></div></div>
+      </div>
     </div>
   </div>
 </section>
@@ -376,6 +470,14 @@ header.scrolled{background:rgba(0,15,97,.94);}
   <p data-i18n="cta_p">השאירו פרטים ונחזור אליכם תוך יום עסקים לשיחת ייעוץ</p>
   <button class="btn-cta" onclick="openContact()">✉️ <span data-i18n="cta_btn">השאירו פרטים ונחזור אליכם</span></button>
 </section>
+
+<!-- ══ CAT DETAIL MODAL ══ -->
+<div class="ov" id="cat-ov" id="cat-ov">
+  <div class="mdl" style="max-width:560px;">
+    <div class="mt"><button class="mc" onclick="closeCatModal()">✕</button><div class="cmo-head"><div class="cmo-ico" id="cmo-ico"></div><div><div class="cmo-title" id="cmo-title"></div><div class="cmo-sub" id="cmo-sub"></div></div></div></div>
+    <div class="mbd" id="cmo-body"></div>
+  </div>
+</div>
 
 <!-- ══ WIZARD ══ -->
 <div id="wiz-ov">
@@ -505,6 +607,16 @@ const T={
     co_title:'השאירו פרטים',co_sub:'נחזור אליכם תוך יום עסקים',
     cu_title:'ספרו לנו על הרעיון',cu_sub:'נחשוב יחד איך לאוטומט',cu_lbl1:'שם ואימייל *',cu_lbl2:'פלטפורמות שמשתמשים בהן',cu_lbl3:'תאור התהליך',cu_ph:'לדוג׳: כל שבוע מוציאים דוח ידני...',cu_lbl4:'שעות בשבוע',cu_btn:'💡 שלחו — נחקור',
     cu_ok_h:'קיבלנו! אנחנו חוקרים',cu_ok_p:'נחזור תוך 2 ימי עסקים.',
+    cm_badge:'כל תהליך עסקי יכול להיות אוטומטי',
+    cm_h:'יש לכם תהליך שחוזר שוב ושוב?',
+    cm_p1:'מפיקים דוחות ידניים כל שבוע? שולחים עדכונים ל-30 אנשים במייל? מנהלים בקשות בוואטסאפ ואקסל?',
+    cm_strong1:'כל זה אפשר לאוטומט.',
+    cm_p2:'כל ארגון שונה — ולכן אנחנו לא מוכרים תבניות. אנחנו מקשיבים, מבינים את התהליכים שלכם, ובונים פתרון מותאם בדיוק לצרכים שלכם.',
+    cm_btn:'דברו איתנו — ייעוץ ראשוני ללא עלות',
+    ce1t:'דוחות שבועיים אוטומטיים',ce1d:'במקום לאסוף נתונים ידנית מ-5 מקורות, המערכת מייצרת ומשלחת את הדוח לבד',
+    ce2t:'התראות חכמות בזמן אמת',ce2d:'כשמשהו חריג קורה במערכות שלכם — אתם יודעים מיד, אוטומטית',
+    ce3t:'חיבור בין כלים שלא מדברים',ce3d:'Monday + Gmail + WhatsApp + Google Sheets — כולם עובדים יחד בלי ידיים',
+    ce4t:'AI שמכיר את הארגון שלכם',ce4d:'בוט פנימי שעונה על שאלות, מסכם מסמכים ומנתב בקשות בצורה חכמה',
   },
   en:{
     lang_btn:'עב׳',
@@ -532,7 +644,17 @@ const T={
     ok_h:'Thank you!',ok_p:'We\'ll get back to you within one business day.',ok_close:'Done',
     co_title:'Leave your details',co_sub:'We\'ll get back within one business day',
     cu_title:'Tell us about your idea',cu_sub:'We\'ll figure out how to automate it',cu_lbl1:'Name & Email *',cu_lbl2:'Platforms you use',cu_lbl3:'Describe the process',cu_ph:'E.g.: Every week we manually create a report and email it...',cu_lbl4:'Hours per week',cu_btn:'💡 Send — we\'ll explore',
-    cu_ok_h:'Got it! We\'re exploring',cu_ok_p:'We\'ll get back within 2 business days.',
+    cu_ok_h:"Got it! We're exploring",cu_ok_p:"We'll get back within 2 business days.",
+    cm_badge:'Every business process can be automated',
+    cm_h:'Have a process that repeats again and again?',
+    cm_p1:'Creating manual reports every week? Sending updates to 30 people by email? Managing requests via WhatsApp and Excel?',
+    cm_strong1:'All of this can be automated.',
+    cm_p2:"Every organization is different — that's why we don't sell templates. We listen, understand your processes, and build a solution tailored exactly to your needs.",
+    cm_btn:'Talk to us — free initial consultation',
+    ce1t:'Automated weekly reports',ce1d:'Instead of manually gathering data from 5 sources, the system generates and sends the report on its own',
+    ce2t:'Smart real-time alerts',ce2d:'When something unusual happens in your systems — you know immediately, automatically',
+    ce3t:'Connect tools that don\'t talk to each other',ce3d:'Monday + Gmail + WhatsApp + Google Sheets — all working together hands-free',
+    ce4t:'AI that knows your organization',ce4d:'An internal bot that answers questions, summarizes documents and routes requests intelligently',
   }
 };
 
@@ -650,175 +772,35 @@ window.addEventListener('load',()=>{
 });
 
 /* ══════════════════════════════════════════════
-   CURSOR TRAIL
+   DOT CURSOR (minimalist)
 ══════════════════════════════════════════════ */
-const tc=document.getElementById('trail-c');
-const tctx=tc.getContext('2d');
-let trail_pts=[];
-tc.width=innerWidth;tc.height=innerHeight;
-window.addEventListener('resize',()=>{tc.width=innerWidth;tc.height=innerHeight;});
-window.addEventListener('mousemove',e=>{
-  trail_pts.push({x:e.clientX,y:e.clientY,t:Date.now(),r:3.5});
-  // small dot cursor
-  tc.style.cursor='none';
-});
-(function drawTrail(){
-  tctx.clearRect(0,0,tc.width,tc.height);
-  const now=Date.now();
-  trail_pts=trail_pts.filter(p=>now-p.t<700);
-  trail_pts.forEach(p=>{
-    const age=(now-p.t)/700;
-    const r=p.r*(1-age);
-    tctx.beginPath();
-    tctx.arc(p.x,p.y,Math.max(r,0),0,Math.PI*2);
-    tctx.fillStyle=`rgba(118,164,249,${(1-age)*0.6})`;
-    tctx.fill();
+const dot=document.getElementById('dot-cur');
+if(dot){
+  window.addEventListener('mousemove',e=>{dot.style.left=e.clientX+'px';dot.style.top=e.clientY+'px';});
+  document.querySelectorAll('button,a,.auto-cat-card,.plat-pill,.mode-btn').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{dot.style.transform='translate(-50%,-50%) scale(2.2)';dot.style.background='var(--teal)';});
+    el.addEventListener('mouseleave',()=>{dot.style.transform='translate(-50%,-50%) scale(1)';dot.style.background='var(--b2)';});
   });
-  // dot cursor
-  if(trail_pts.length>0){
-    const last=trail_pts[trail_pts.length-1];
-    tctx.beginPath();tctx.arc(last.x,last.y,4,0,Math.PI*2);
-    tctx.fillStyle='rgba(40,112,246,0.9)';tctx.fill();
-  }
-  requestAnimationFrame(drawTrail);
-})();
+}
 
 /* ══════════════════════════════════════════════
-   PLATFORMS CANVAS (hero background - full screen, avoids center)
+   BUILD MARQUEE ROWS
 ══════════════════════════════════════════════ */
-(function(){
-  const c=document.getElementById('plat-c');
-  if(!c)return;
-  const ctx=c.getContext('2d');
-  let W=0,H=0,orbs=[];
-  function resize(){
-    W=c.width=c.parentElement.offsetWidth||window.innerWidth;
-    H=c.height=c.parentElement.offsetHeight||window.innerHeight;
-    // respawn when resized
-    orbs=[];for(let i=0;i<28;i++)orbs.push(spawn());
-  }
-  const pool=[...PLATFORMS];
-  let pi=0;
-  function spawnPos(){
-    // Avoid center ~40% radius ellipse — push names to edges
-    let x,y,tries=0;
-    do{
-      x=Math.random()*W; y=Math.random()*H;
-      const nx=(x-W/2)/(W*.42), ny=(y-H/2)/(H*.38);
-      if(nx*nx+ny*ny>1)break; // outside center ellipse
-      tries++;
-    }while(tries<30);
-    return{x,y};
-  }
-  function spawn(){
-    const p=pool[pi%pool.length]; pi++;
-    const pos=spawnPos();
-    return{
-      text:p, x:pos.x, y:pos.y,
-      dx:(Math.random()-.5)*.18, dy:(Math.random()-.5)*.14,
-      alpha:0, maxA:Math.random()*.38+.12,
-      life:0, lifeMax:Math.random()*300+200,
-      fs:Math.floor(Math.random()*5)+10,
-    };
-  }
-  orbs=[];for(let i=0;i<28;i++)orbs.push(spawn());
-  window.addEventListener('resize',resize);
-  resize();
-  (function draw(){
-    ctx.clearRect(0,0,W,H);
-    orbs.forEach((o,i)=>{
-      o.life++;
-      const half=o.lifeMax/2;
-      o.alpha=o.life<half?o.maxA*(o.life/half):o.maxA*(1-(o.life-half)/half);
-      o.x+=o.dx; o.y+=o.dy;
-      if(o.x<0)o.x=W; if(o.x>W)o.x=0;
-      if(o.y<0)o.y=H; if(o.y>H)o.y=0;
-      // Check if drifted into center — gently nudge away
-      const nx=(o.x-W/2)/(W*.42), ny=(o.y-H/2)/(H*.38);
-      if(nx*nx+ny*ny<1){
-        o.dx+=(o.x<W/2?-.04:.04);
-        o.dy+=(o.y<H/2?-.03:.03);
-      }
-      ctx.font=`600 ${o.fs}px Heebo`;
-      ctx.fillStyle=`rgba(118,164,249,${o.alpha})`;
-      ctx.fillText(o.text,o.x,o.y);
-      if(o.life>=o.lifeMax)orbs[i]=spawn();
-    });
-    requestAnimationFrame(draw);
-  })();
-})();
-
-/* ══════════════════════════════════════════════
-   PLATFORMS MAIN CANVAS (section - full width, no box)
-══════════════════════════════════════════════ */
-(function(){
-  const c=document.getElementById('plat-main-c');
-  if(!c)return;
-  const ctx=c.getContext('2d');
-  let W=0,H=0,nodes=[];
-  function resize(){
-    W=c.width=c.parentElement.offsetWidth||window.innerWidth;
-    H=c.height=c.parentElement.offsetHeight||380;
-    buildNodes();
-  }
-  let mx=-999,my=-999;
-  window.addEventListener('mousemove',e=>{
-    const r=c.getBoundingClientRect();
-    if(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom){
-      mx=e.clientX-r.left; my=e.clientY-r.top;
-    }
+function buildMarquee(){
+  const rows=[['mq1','mq2','mq3'],3];
+  const chunk=Math.ceil(PLATFORMS.length/3);
+  const r1=PLATFORMS.slice(0,chunk);
+  const r2=PLATFORMS.slice(chunk,chunk*2);
+  const r3=PLATFORMS.slice(chunk*2);
+  [r1,r2,r3].forEach((row,i)=>{
+    const el=document.getElementById('mq'+(i+1));
+    if(!el)return;
+    // duplicate for seamless loop
+    const doubled=[...row,...row];
+    el.innerHTML=doubled.map(p=>`<span class="plat-pill">${p}</span>`).join('');
   });
-  function buildNodes(){
-    nodes=PLATFORMS.map((p,i)=>{
-      // Scatter across full canvas width in organic clusters
-      const col=Math.floor(i/4);
-      const row=i%4;
-      const cols=Math.ceil(PLATFORMS.length/4);
-      const bx=(col/(cols-1))*(W*.92)+W*.04+( Math.random()-.5)*W*.06;
-      const by=(row/3)*(H*.8)+H*.1+(Math.random()-.5)*H*.08;
-      return{
-        text:p, bx, by, x:bx, y:by, vx:0, vy:0,
-        fs:Math.floor(Math.random()*5)+11,
-        baseA:Math.random()*.28+.18,
-      };
-    });
-  }
-  resize();
-  window.addEventListener('resize',resize);
-  (function draw(){
-    ctx.clearRect(0,0,W,H);
-    // Edge fade
-    const gL=ctx.createLinearGradient(0,0,W,0);
-    gL.addColorStop(0,'rgba(0,15,97,.7)');gL.addColorStop(.08,'transparent');
-    gL.addColorStop(.92,'transparent');gL.addColorStop(1,'rgba(0,15,97,.7)');
-    // connections
-    nodes.forEach((a,i)=>{
-      nodes.slice(i+1,i+5).forEach(b=>{
-        const d=Math.hypot(a.x-b.x,a.y-b.y);
-        if(d<160){
-          ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
-          ctx.strokeStyle=`rgba(40,112,246,${.09*(1-d/160)})`;ctx.lineWidth=.8;ctx.stroke();
-        }
-      });
-    });
-    nodes.forEach(n=>{
-      const dx=mx-n.x,dy=my-n.y,dist=Math.max(Math.hypot(dx,dy),1);
-      const rep=dist<160?-(160-dist)/160*1.4:0;
-      n.vx+=(n.bx-n.x)*.016+(rep*dx/dist);
-      n.vy+=(n.by-n.y)*.016+(rep*dy/dist);
-      n.vx*=.86;n.vy*=.86;
-      n.x+=n.vx;n.y+=n.vy;
-      const highlight=dist<120?Math.min(1,(120-dist)/120*.6):0;
-      const a=n.baseA+highlight*.45;
-      ctx.font=`600 ${n.fs}px Heebo`;
-      ctx.fillStyle=`rgba(${highlight>0.1?'196,216,253':'118,164,249'},${a})`;
-      ctx.fillText(n.text,n.x,n.y);
-    });
-    // overlay edge fades
-    ctx.fillStyle=gL; ctx.fillRect(0,0,W,H);
-    requestAnimationFrame(draw);
-  })();
-})();
+}
+buildMarquee();
 
 /* ══════════════════════════════════════════════
    SCROLL / REVEAL / HEADER
@@ -853,20 +835,19 @@ function applyLang(){
 /* ══════════════════════════════════════════════
    MODE (hero buttons)
 ══════════════════════════════════════════════ */
-const BG={all:'#000F61',companies:'#001D8A',colleges:'#1A0F6E'};
-const OVERLAY={all:'transparent',companies:'rgba(0,60,180,.18)',colleges:'rgba(80,40,180,.22)'};
+/* MODE with brand colors */
+const BG={all:'#000F61',companies:'#38B6FF',colleges:'#0A59EB'};
 function setMode(m){
   mode=m;
-  // bg tint — noticeably different
   document.getElementById('page-bg').style.background=BG[m];
-  const ov=document.getElementById('mode-overlay');
-  ov.style.background=OVERLAY[m];
-  ov.style.opacity=m==='all'?'0':'1';
+  document.body.dataset.mode=m==='all'?'':m;
   // button states
   document.getElementById('mb-co').className='mode-btn'+(m==='companies'?' active-co':'');
   document.getElementById('mb-ed').className='mode-btn'+(m==='colleges'?' active-ed':'');
   document.getElementById('mb-all').className='mode-btn'+(m==='all'?' active-all':'');
-  // filter automations + scroll
+  // sync header nav buttons highlight
+  document.querySelectorAll('.hn[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));
+  // filter
   filterAuto(m,null);
   const afts=document.querySelectorAll('.aft');
   afts.forEach(b=>{b.classList.toggle('active',b.dataset.filter===m||(m==='all'&&b.dataset.filter==='all'));});
@@ -887,14 +868,166 @@ function renderAuto(){
   else{cats=CATS.colleges;}
   document.getElementById('auto-grid').innerHTML=cats.map(c=>{
     const name=lang==='he'?c.he:c.en;
-    const items=(lang==='he'?c.ihe:c.ien).map(it=>`<span class="acc-item">${it}</span>`).join('');
-    return`<div class="auto-cat-card reveal">
-      <div class="acc-head"><div class="acc-ico">${c.icon}</div><div><div class="acc-name">${name}</div><div class="acc-count">${(lang==='he'?c.ihe:c.ien).length} ${lang==='he'?'פתרונות':'solutions'}</div></div></div>
-      <div class="acc-items">${items}</div>
+    const items=(lang==='he'?c.ihe:c.ien).slice(0,5).map(it=>`<span class="acc-item">${it}</span>`).join('');
+    const more=(lang==='he'?c.ihe:c.ien).length>5?`<span class="acc-item" style="opacity:.55">+${(lang==='he'?c.ihe:c.ien).length-5}...</span>`:'';
+    return`<div class="auto-cat-card reveal" onclick="openCatModal('${c.id}')" style="cursor:pointer;">
+      <div class="acc-head"><div class="acc-ico">${c.icon}</div><div><div class="acc-name">${name}</div><div class="acc-count">${(lang==='he'?c.ihe:c.ien).length} ${lang==='he'?'פתרונות':'solutions'} · ${lang==='he'?'לחצו לפרטים':'click for details'} →</div></div></div>
+      <div class="acc-items">${items}${more}</div>
     </div>`;
   }).join('');
   document.querySelectorAll('.auto-cat-card.reveal').forEach(el=>ro.observe(el));
 }
+
+/* Cat detail modal */
+const CAT_DETAILS={
+  mktg:{
+    prob_he:'קמפיינים מנוהלים ידנית, תוכן מופץ בעיכוב, קהלים לא מסוגמנטים — מה שגורם לבזבוז תקציב ואובדן הזדמנויות.',
+    sol_he:'אנחנו בונים מנוע שיווקי שרץ לבד: ניהול קמפיינים מקצה לקצה, פילוח קהלים אוטומטי, ריטרגטינג חכם ומדיה חברתית שמתעדכנת מעצמה.',
+    prob_en:'Campaigns managed manually, content delayed, audiences unsegmented — wasted budget and lost opportunities.',
+    sol_en:'We build a marketing engine that runs itself: end-to-end campaign management, automated audience segmentation, smart retargeting and auto-updating social media.',
+  },
+  leads:{
+    prob_he:'לידים שנופלים בין הכיסאות, ניקוד ידני לא עקבי, וצוות מכירות שמבזבז זמן על לידים קרים.',
+    sol_he:'מערכת שקולטת כל ליד מכל מקור, מעשירה אוטומטית עם מידע עסקי, מנקדת לפי פוטנציאל, ומנתבת לנציג הנכון.',
+    prob_en:'Leads falling through the cracks, inconsistent manual scoring, sales team wasting time on cold leads.',
+    sol_en:'A system that captures every lead from every source, automatically enriches with business info, scores by potential, and routes to the right rep.',
+  },
+  sales:{
+    prob_he:'פייפליין לא מנוהל, עסקאות שנשכחות, follow-up ידני שלא מתבצע בזמן.',
+    sol_he:'אוטומציה שמנהלת את כל תהליך המכירה: מעקב עסקאות, follow-up אוטומטי בדיוק בזמן הנכון, יצירת הצעות מחיר ותזמון שיחות.',
+    prob_en:'Unmanaged pipeline, forgotten deals, manual follow-ups that happen too late.',
+    sol_en:'Automation that manages the entire sales process: deal tracking, perfectly-timed automatic follow-ups, proposal generation and call scheduling.',
+  },
+  comm:{
+    prob_he:'הודעות נשלחות ידנית ועם עיכוב, תקשורת מפוזרת בין ערוצים, לקוחות שלא מקבלים מענה בזמן.',
+    sol_he:'מערכת תקשורת אחידה שמנהלת מיילים, SMS, WhatsApp והתראות — הכל אוטומטי, הכל מסונכרן, הכל בזמן.',
+    prob_en:'Messages sent manually and with delays, communication scattered across channels, customers not getting timely responses.',
+    sol_en:'A unified communication system managing emails, SMS, WhatsApp and notifications — all automatic, all synchronized, all on time.',
+  },
+  ops:{
+    prob_he:'בקשות פנימיות מגיעות בוואטסאפ ומייל, אין מעקב, אישורים תקועים, תהליכים לא עקביים.',
+    sol_he:'פורטל ניהול פנימי עם ניתוב אוטומטי, תהליכי אישור דיגיטליים, מעקב סטטוס ודוחות ניהוליים.',
+    prob_en:'Internal requests via WhatsApp and email, no tracking, approvals stuck, inconsistent processes.',
+    sol_en:'Internal management portal with automatic routing, digital approval processes, status tracking and management reports.',
+  },
+  hr:{
+    prob_he:'גיוס ידני, קליטה מבולגנת, הדרכות שלא מתבצעות בזמן ומעקב ביצועים ידני.',
+    sol_he:'אוטומציה לכל מחזור חיי העובד: משלב הגיוס ועד מעקב ביצועים שוטף — הכל מובנה, עקבי ואוטומטי.',
+    prob_en:'Manual recruitment, chaotic onboarding, training delays and manual performance tracking.',
+    sol_en:'Automation for the entire employee lifecycle: from recruitment through ongoing performance tracking — all structured, consistent and automatic.',
+  },
+  analytics:{
+    prob_he:'נתונים מפוזרים ב-5 מקורות שונים, דוחות שלוקחים שעות לבנות, מנהלים שמקבלים החלטות בלי תמונה מלאה.',
+    sol_he:'מערכת שאוספת ומאחדת את כל הנתונים, בונה דשבורד חי ומייצרת דוחות אוטומטיים שמגיעים ישירות למייל.',
+    prob_en:'Data scattered across 5 sources, reports that take hours to build, managers making decisions without the full picture.',
+    sol_en:'A system that collects and unifies all data, builds a live dashboard and generates automatic reports delivered directly to email.',
+  },
+  ai:{
+    prob_he:'אין ניצול של כוח ה-AI העסקי, שאלות חוזרות גוזלות זמן, תוכן נוצר ידנית.',
+    sol_he:'אנחנו מטמיעים כלי AI מותאמים לארגון שלכם: עוזרים חכמים, ניתוח חזוי, יצירת תוכן אוטומטית ומערכות המלצה.',
+    prob_en:"Not leveraging AI's business power, repetitive questions wasting time, content created manually.",
+    sol_en:'We embed AI tools tailored to your organization: smart assistants, predictive analytics, automatic content generation and recommendation systems.',
+  },
+  support:{
+    prob_he:'פניות לקוחות מנוהלות ידנית, בעיות חוזרות לא מזוהות, שביעות רצון לקוחות יורדת.',
+    sol_he:'מערכת תמיכה חכמה: כרטיסים שמנותבים אוטומטית, צ'אטבוט שפותר 60% מהפניות, ניתוח שיחות ומדדי שביעות רצון.',
+    prob_en:'Customer inquiries managed manually, recurring issues not identified, customer satisfaction declining.',
+    sol_en:"Smart support system: automatically routed tickets, chatbot solving 60% of inquiries, call analysis and satisfaction metrics.",
+  },
+  fin:{
+    prob_he:'חשבוניות ידניות, מעקב תשלומים בגיליון אקסל, דוחות כספיים שלוקחים ימים.',
+    sol_he:'אוטומציה פיננסית מלאה: חשבוניות שנוצרות ונשלחות לבד, מעקב תשלומים אוטומטי ודוחות כספיים מיידיים.',
+    prob_en:'Manual invoices, payment tracking in Excel, financial reports taking days.',
+    sol_en:'Full financial automation: invoices generated and sent automatically, automatic payment tracking and instant financial reports.',
+  },
+  integ:{
+    prob_he:'מערכות שלא מדברות אחת עם השנייה, נתונים שמתעדכנים ידנית ב-3 מקומות, פעולות חוזרות בין פלטפורמות.',
+    sol_he:'אנחנו בונים את "הגשרים" בין כל הכלים שלכם — API integrations, Webhooks, ו-n8n workflows שמסנכרנים הכל.',
+    prob_en:"Systems that don't talk to each other, data manually updated in 3 places, repetitive cross-platform actions.",
+    sol_en:"We build the 'bridges' between all your tools — API integrations, Webhooks, and n8n workflows that synchronize everything.",
+  },
+  sec:{
+    prob_he:'גישה לא מנוהלת, ביקורת ידנית, עמידה בתקנות שדורשת עבודה אנושית.',
+    sol_he:'אוטומציה של בקרת גישה, יצירת לוגי ביקורת אוטומטיים ומעקב עמידה בתקנות בזמן אמת.',
+    prob_en:'Unmanaged access, manual audits, compliance requiring human work.',
+    sol_en:'Automated access control, automatic audit log generation and real-time compliance tracking.',
+  },
+  web:{
+    prob_he:'דפי נחיתה שלא מומרים, A/B testing שלא מתבצע, פאנל מכירות שלא מנוהל.',
+    sol_he:'אוטומציה לכל מסע הלקוח באתר: מעקב המרות, A/B testing אוטומטי ואופטימיזציה שוטפת של הפאנל.',
+    prob_en:'Landing pages not converting, A/B testing not happening, unmanaged sales funnel.',
+    sol_en:'Automation for the entire customer journey on your site: conversion tracking, automatic A/B testing and ongoing funnel optimization.',
+  },
+  recruit:{
+    prob_he:'פניות ממועמדים מגיעות ממקורות שונים ואובדות בדרך — אין מקום אחד שמרכז הכל.',
+    sol_he:'המערכת קולטת כל ליד מכל מקור, שולחת מיד מידע על מסלולי לימוד, ומנהלת סדרת מיילים אוטומטית למועמד.',
+    prob_en:'Inquiries from applicants arrive from different sources and get lost — no central place to manage everything.',
+    sol_en:'The system captures every lead from every source, immediately sends program information, and manages an automatic email sequence for each applicant.',
+  },
+  lms:{
+    prob_he:'סטודנטים שולחים עבודות במייל ו-WhatsApp — המרצה לא יכול לעקוב מי הגיש ומי לא.',
+    sol_he:'כל קורס מקבל קישור ייעודי להגשות. המערכת מרכזת הכל, שולחת תזכורות לפני דדליינים ומעדכנת את המרצה.',
+    prob_en:"Students submit assignments via email and WhatsApp — the lecturer can't track who submitted and who didn't.",
+    sol_en:'Each course gets a dedicated submission link. The system centralizes everything, sends deadline reminders and updates the lecturer.',
+  },
+  admin:{
+    prob_he:'לוחות זמנים ידניים, בקשות סטודנטים שנופלות בין הכיסאות, ניירת שגוזלת שעות.',
+    sol_he:'מערכת ניהול אקדמי שמסנכרנת לוחות זמנים, מנתבת בקשות אוטומטית ומנהלת מסמכים דיגיטלית.',
+    prob_en:'Manual scheduling, student requests falling through the cracks, paperwork consuming hours.',
+    sol_en:'Academic management system that syncs schedules, automatically routes requests and manages documents digitally.',
+  },
+  exp:{
+    prob_he:'סטודנטים מנותקים, שיתוף פעולה לא מתרחש, למידה לא מותאמת אישית.',
+    sol_he:'מערכת שמזהה סטודנטים שמתקשים, מפנה אותם למשאבים הרלוונטיים ויוצרת חוויית למידה מותאמת אישית.',
+    prob_en:'Disconnected students, collaboration not happening, learning not personalized.',
+    sol_en:'A system that identifies struggling students, directs them to relevant resources and creates a personalized learning experience.',
+  },
+  aied:{
+    prob_he:'סטודנטים שואלים שאלות בלילה ואין מרצה זמין, הכנה למבחן בלי משוב, הרצאות שלא נגישות.',
+    sol_he:'מדריכי AI זמינים 24/7, מערכת תרגול מבחנים מותאמת אישית, תמלול וסיכום הרצאות אוטומטי.',
+    prob_en:"Students asking questions at night with no lecturer available, exam prep without feedback, lectures not accessible.",
+    sol_en:'AI tutors available 24/7, personalized exam practice system, automatic lecture transcription and summarization.',
+  },
+  ecomm:{
+    prob_he:'מיילים ידניים למועמדים, תזכורות שנשכחות, עדכוני קורסים שלא מגיעים בזמן.',
+    sol_he:'מערכת תקשורת אוטומטית שמשלחת מיד עם הרשמה, שולחת תזכורות חכמות ומעדכנת את כל הנוגעים בדבר.',
+    prob_en:'Manual emails to applicants, forgotten reminders, course updates not arriving on time.',
+    sol_en:'Automatic communication system that sends immediately upon registration, delivers smart reminders and keeps all relevant parties updated.',
+  },
+  eanalytics:{
+    prob_he:'אין תמונה ברורה של ביצועי הסטודנטים, דוחות לפקולטה שלוקחים שעות, נוכחות שנבדקת ידנית.',
+    sol_he:'דשבורד חי לכל מרצה ומנהל: מעקב נוכחות אוטומטי, דוחות ביצועים שמייצרים את עצמם ומגמות שמזוהות מראש.',
+    prob_en:'No clear picture of student performance, faculty reports taking hours, attendance checked manually.',
+    sol_en:'Live dashboard for every lecturer and manager: automatic attendance tracking, self-generating performance reports and pre-identified trends.',
+  },
+  einteg:{
+    prob_he:'Moodle, מערכת הרישום, Gmail וZoom — כולם מנותקים. נתוני סטודנטים מתעדכנים ידנית.',
+    sol_he:'אנחנו מחברים את כל הפלטפורמות החינוכיות שלכם לרשת אחת חכמה — מעדכון אוטומטי, סנכרון נתונים ו-zero ידיים.',
+    prob_en:'Moodle, registration system, Gmail and Zoom — all disconnected. Student data updated manually.',
+    sol_en:'We connect all your educational platforms into one smart network — automatic updates, data syncing and zero manual work.',
+  },
+};
+function openCatModal(id){
+  const all=[...CATS.companies,...CATS.colleges];
+  const c=all.find(x=>x.id===id);
+  if(!c)return;
+  const d=CAT_DETAILS[id]||{};
+  const name=lang==='he'?c.he:c.en;
+  const items=(lang==='he'?c.ihe:c.ien).map(it=>`<span class="cmo-feat">${it}</span>`).join('');
+  const prob=lang==='he'?(d.prob_he||''):(d.prob_en||'');
+  const sol=lang==='he'?(d.sol_he||''):(d.sol_en||'');
+  document.getElementById('cmo-ico').textContent=c.icon;
+  document.getElementById('cmo-title').textContent=name;
+  document.getElementById('cmo-sub').textContent=lang==='he'?c.he+' — '+c.ihe.length+' פתרונות':c.en+' — '+c.ien.length+' solutions';
+  document.getElementById('cmo-body').innerHTML=`
+    ${prob?`<div class="cmo-prob">${prob}</div>`:''}
+    ${sol?`<div class="cmo-sol">${sol}</div>`:''}
+    <div class="mblk"><div class="mlbl">${lang==='he'?'מה כלול':'What\'s included'}</div><div class="cmo-feats">${items}</div></div>
+    <div style="display:flex;justify-content:center;margin-top:18px;"><button class="btn-sub" style="max-width:300px;" onclick="closeCatModal();openWizard()">${lang==='he'?'🚀 הוסיפו לחבילה שלכם':'🚀 Add to your package'}</button></div>`;
+  document.getElementById('cat-ov').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closeCatModal(){document.getElementById('cat-ov').classList.remove('show');document.body.style.overflow='';}
 renderAuto();
 
 /* ══════════════════════════════════════════════
@@ -989,7 +1122,8 @@ function submitCu(){
 }
 document.getElementById('co-ov').addEventListener('click',e=>{if(e.target===document.getElementById('co-ov'))closeContact();});
 document.getElementById('cu-ov').addEventListener('click',e=>{if(e.target===document.getElementById('cu-ov'))closeCustom();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeContact();closeCustom();closeWizard();}});
+document.getElementById('cat-ov').addEventListener('click',e=>{if(e.target===document.getElementById('cat-ov'))closeCatModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeContact();closeCatModal();closeWizard();}});
 </script>
 </body>
 </html>

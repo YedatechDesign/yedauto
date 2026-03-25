@@ -73,8 +73,8 @@ header.scrolled{background:rgba(0,15,97,.94);}
 .mode-btn.active-co{background:linear-gradient(135deg,rgba(7,59,157,.6),rgba(40,112,246,.4));border-color:var(--b2);color:#fff;box-shadow:0 8px 30px rgba(7,59,157,.45);}
 .mode-btn.active-ed{background:linear-gradient(135deg,rgba(64,75,136,.7),rgba(10,89,235,.45));border-color:var(--b3);color:#fff;box-shadow:0 8px 30px rgba(64,75,136,.45);}
 .mode-btn.active-all{background:linear-gradient(135deg,rgba(40,112,246,.4),rgba(118,164,249,.25));border-color:var(--b3);color:#fff;box-shadow:0 8px 30px rgba(40,112,246,.3);}
-.wiz-hero-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--b1),var(--b2));border:none;border-radius:16px;padding:16px 38px;font-family:'Heebo',sans-serif;font-size:16px;font-weight:900;color:#fff;cursor:pointer;box-shadow:0 8px 36px rgba(10,89,235,.5);transition:all .25s;animation:fadeUp .8s .45s ease both,wph 3s 1s ease infinite;}
-@keyframes wph{0%,100%{box-shadow:0 8px 36px rgba(10,89,235,.5)}50%{box-shadow:0 8px 52px rgba(40,112,246,.7)}}
+.wiz-hero-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(270deg,var(--b4),var(--b2),var(--nb),var(--b1),var(--b2),var(--b3),var(--b4));background-size:400% 100%;border:none;border-radius:16px;padding:16px 38px;font-family:'Heebo',sans-serif;font-size:16px;font-weight:900;color:#fff;cursor:pointer;box-shadow:0 8px 36px rgba(10,89,235,.5);transition:transform .25s,box-shadow .25s;animation:fadeUp .8s .45s ease both,iridescent 4s 1s ease infinite;}
+@keyframes iridescent{0%,100%{background-position:0% 50%;box-shadow:0 8px 36px rgba(10,89,235,.5)}50%{background-position:100% 50%;box-shadow:0 8px 52px rgba(118,164,249,.75)}}
 .wiz-hero-btn:hover{transform:translateY(-4px) scale(1.02);}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -236,6 +236,7 @@ header.scrolled{background:rgba(0,15,97,.94);}
 .mdl::-webkit-scrollbar{width:4px;}.mdl::-webkit-scrollbar-thumb{background:rgba(40,112,246,.3);border-radius:4px;}
 .mt{padding:22px 22px 18px;border-bottom:1px solid rgba(255,255,255,.07);position:sticky;top:0;background:#000D50;border-radius:22px 22px 0 0;z-index:1;}
 .mc{position:absolute;top:16px;left:16px;width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:var(--t3);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+[dir="ltr"] .mc{left:auto;right:16px;}
 .mc:hover{background:rgba(255,255,255,.14);color:#fff;}
 .mhd{display:flex;align-items:center;gap:12px;}
 .mi-ic{width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:25px;background:linear-gradient(135deg,rgba(40,112,246,.2),rgba(118,164,249,.12));border:1px solid rgba(40,112,246,.22);flex-shrink:0;}
@@ -257,57 +258,26 @@ header.scrolled{background:rgba(0,15,97,.94);}
   .stats-grid{grid-template-columns:1fr 1fr;}
   .auto-cats-grid{grid-template-columns:1fr;}
   .wb{padding:22px 18px 50px;}
-  .tcards{grid-template-columns:1fr;}
+  .tcards{grid-template-columns:1fr !important;}
   .rgrid{grid-template-columns:1fr;}
   .wiz-steps{padding:18px 18px 0;}
   .wsl{display:none;}.wsl2{width:28px;}
   body{cursor:auto;}.cursor-trail{display:none;}
 }
 
-/* ══ MODE COLORS — COMPANIES ══ */
-body[data-mode="companies"]{--t1:#000F61;--t2:rgba(0,15,97,.78);--t3:rgba(0,15,97,.48);--card:rgba(0,15,97,.07);--bdr:rgba(0,15,97,.14);}
-body[data-mode="companies"] header{background:rgba(56,182,255,.9) !important;border-bottom-color:rgba(0,15,97,.15);}
-body[data-mode="companies"] .logo{color:#000F61;}
-body[data-mode="companies"] .logo-dot{background:linear-gradient(135deg,#000F61,#073B9D);}
-body[data-mode="companies"] .hn{color:#000F61;background:rgba(0,15,97,.09);border-color:rgba(0,15,97,.2);}
-body[data-mode="companies"] .hn:hover{background:rgba(0,15,97,.18);color:#000F61;}
-body[data-mode="companies"] .hn.accent{background:#000F61 !important;border-color:transparent;color:#fff !important;}
-body[data-mode="companies"] .lang-btn{color:#000F61;border-color:rgba(0,15,97,.3);background:rgba(0,15,97,.1);}
-body[data-mode="companies"] .grad{background:linear-gradient(90deg,#000F61 0%,#073B9D 50%,#000F61 100%) !important;background-size:200% auto !important;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;}
-body[data-mode="companies"] .hero-kicker{background:rgba(0,15,97,.1);border-color:rgba(0,15,97,.25);color:#000F61;}
-body[data-mode="companies"] .mode-btn{color:rgba(0,15,97,.65);border-color:rgba(0,15,97,.18);background:rgba(0,15,97,.06);}
-body[data-mode="companies"] .wiz-hero-btn{background:linear-gradient(135deg,#000F61,#073B9D) !important;}
-body[data-mode="companies"] .sc{background:rgba(255,255,255,.3);}
-body[data-mode="companies"] .sn{background:linear-gradient(135deg,#000F61,#073B9D) !important;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;}
-body[data-mode="companies"] .sl{color:rgba(0,15,97,.55);}
-body[data-mode="companies"] .auto-cat-card{background:rgba(255,255,255,.25);border-color:rgba(0,15,97,.1);}
-body[data-mode="companies"] .acc-ico{background:linear-gradient(135deg,rgba(0,15,97,.14),rgba(7,59,157,.08));border-color:rgba(0,15,97,.18);}
-body[data-mode="companies"] .acc-item{background:rgba(0,15,97,.06);border-color:rgba(0,15,97,.1);color:rgba(0,15,97,.62);}
-body[data-mode="companies"] .acc-item:hover{background:rgba(0,15,97,.18);border-color:rgba(0,15,97,.3);color:#000F61;}
-body[data-mode="companies"] .btn-cta{background:linear-gradient(135deg,#000F61,#073B9D) !important;}
-body[data-mode="companies"] .eye-tag{background:rgba(0,15,97,.1);border-color:rgba(0,15,97,.2);color:#000F61;}
-body[data-mode="companies"] .sec-title::after{background:linear-gradient(90deg,transparent,#073B9D,transparent);}
-body[data-mode="companies"] .plat-pill{background:rgba(0,15,97,.08);border-color:rgba(0,15,97,.16);color:rgba(0,15,97,.6);}
-body[data-mode="companies"] .plat-pill:hover{background:rgba(0,15,97,.18);border-color:rgba(0,15,97,.38);color:#000F61;box-shadow:0 6px 18px rgba(0,15,97,.2);}
-/* ══ MODE COLORS — COLLEGES ══ */
-body[data-mode="colleges"] header{background:rgba(10,89,235,.75) !important;backdrop-filter:blur(22px);}
 /* ══ MARQUEE ══ */
 .mq-section{overflow:hidden;padding:6px 0 44px;position:relative;}
 .mq-section::before,.mq-section::after{content:'';position:absolute;top:0;bottom:0;width:110px;z-index:2;pointer-events:none;}
 .mq-section::before{left:0;background:linear-gradient(to right,#000F61 0%,transparent 100%);}
 .mq-section::after{right:0;background:linear-gradient(to left,#000F61 0%,transparent 100%);}
-body[data-mode="companies"] .mq-section::before{background:linear-gradient(to right,#38B6FF 0%,transparent 100%);}
-body[data-mode="companies"] .mq-section::after{background:linear-gradient(to left,#38B6FF 0%,transparent 100%);}
-body[data-mode="colleges"] .mq-section::before{background:linear-gradient(to right,#0A59EB 0%,transparent 100%);}
-body[data-mode="colleges"] .mq-section::after{background:linear-gradient(to left,#0A59EB 0%,transparent 100%);}
 .mq-row{overflow:hidden;padding:5px 0;}
 .mq-track{display:flex;gap:10px;width:max-content;will-change:transform;}
-.mq-r1 .mq-track{animation:mq-rtl 32s linear infinite;}
-.mq-r2 .mq-track{animation:mq-ltr 24s linear infinite;}
-.mq-r3 .mq-track{animation:mq-rtl 40s linear infinite;}
+.mq-r1 .mq-track{animation:mq-rtl 36s linear infinite;}
+.mq-r2 .mq-track{animation:mq-ltr 28s linear infinite;}
+.mq-r3 .mq-track{animation:mq-rtl 44s linear infinite;}
 .mq-row:hover .mq-track{animation-play-state:paused;}
-@keyframes mq-rtl{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-@keyframes mq-ltr{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+@keyframes mq-rtl{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes mq-ltr{from{transform:translateX(-50%)}to{transform:translateX(0)}}
 .plat-pill{display:inline-flex;align-items:center;padding:8px 18px;border-radius:24px;background:rgba(255,255,255,.06);border:1px solid rgba(118,164,249,.2);color:rgba(196,216,253,.65);font-size:13px;font-weight:600;white-space:nowrap;cursor:default;transition:all .25s cubic-bezier(.34,1.56,.64,1);flex-shrink:0;}
 .plat-pill:hover{background:rgba(40,112,246,.22);border-color:rgba(118,164,249,.6);color:#fff;transform:scale(1.08) translateY(-3px);box-shadow:0 8px 24px rgba(40,112,246,.4);}
 /* ══ EXTRA EFFECTS ══ */
@@ -321,7 +291,7 @@ body[data-mode="colleges"] .mq-section::after{background:linear-gradient(to left
 @keyframes numPop{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
 .sc:hover .sn{animation:numPop .4s cubic-bezier(.34,1.56,.64,1);}
 .btn-cta{position:relative;overflow:hidden;}
-.btn-cta::after,.cm-btn::after,.wiz-hero-btn::after{content:'';position:absolute;top:0;left:-100%;width:55%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);pointer-events:none;animation:shimmer 3.5s 1s ease infinite;}
+.btn-cta::after,.cm-btn::after{content:'';position:absolute;top:0;left:-100%;width:55%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);pointer-events:none;animation:shimmer 3.5s 1s ease infinite;}
 @keyframes shimmer{0%{left:-100%}35%,100%{left:160%}}
 .auto-cat-card:nth-child(2){transition-delay:.04s;}
 .auto-cat-card:nth-child(3){transition-delay:.08s;}
@@ -353,9 +323,9 @@ body[data-mode="colleges"] .mq-section::after{background:linear-gradient(to left
 .cmo-ico{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:27px;background:linear-gradient(135deg,rgba(40,112,246,.2),rgba(118,164,249,.13));border:1px solid rgba(40,112,246,.22);flex-shrink:0;}
 .cmo-title{font-size:20px;font-weight:900;letter-spacing:-.4px;margin-bottom:3px;}
 .cmo-sub{font-size:12px;color:var(--t3);}
-.cmo-prob{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:13px;padding:15px 17px;font-size:13px;color:var(--t2);line-height:1.75;margin-bottom:12px;}
+.cmo-prob{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:13px;padding:16px 20px;font-size:15px;color:rgba(255,255,255,.88);line-height:1.8;margin-bottom:12px;}
 .cmo-prob::before{content:'⚡ הבעיה:';display:block;font-size:10px;font-weight:900;color:var(--gold);margin-bottom:7px;letter-spacing:.5px;}
-.cmo-sol{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);border-radius:13px;padding:15px 17px;font-size:13px;color:var(--t2);line-height:1.75;margin-bottom:14px;}
+.cmo-sol{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);border-radius:13px;padding:16px 20px;font-size:15px;color:rgba(255,255,255,.88);line-height:1.8;margin-bottom:14px;}
 .cmo-sol::before{content:'✅ הפתרון שלנו:';display:block;font-size:10px;font-weight:900;color:var(--green);margin-bottom:7px;letter-spacing:.5px;}
 .cmo-feats{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px;}
 .cmo-feat{padding:5px 13px;border-radius:17px;font-size:12px;font-weight:600;background:rgba(40,112,246,.1);border:1px solid rgba(40,112,246,.2);color:var(--b3);}
@@ -393,7 +363,6 @@ body[data-mode="colleges"] .mq-section::after{background:linear-gradient(to left
 <!-- ══ HERO ══ -->
 <section id="s-hero">
   <div style="position:relative;z-index:2;">
-    <div class="hero-kicker"><span class="blink">●</span> <span data-i18n="kicker">n8n · Claude AI · Supabase · 40+ integrations</span></div>
     <h1><span data-i18n="h1a">הטכנולוגיה עובדת —</span><br><span class="grad" data-i18n="h1b">אתם מתמקדים בצמיחה</span></h1>
     <p class="hero-sub" data-i18n="hero_sub">אנחנו בונים אוטומציות חכמות שחוסכות עשרות שעות בחודש.<br>בחרו את הארגון שלכם כדי לראות את הפתרונות הרלוונטיים.</p>
     <div class="mode-btns">
@@ -418,7 +387,6 @@ body[data-mode="colleges"] .mq-section::after{background:linear-gradient(to left
 <!-- ══ AUTOMATIONS ══ -->
 <section id="s-automations" class="reveal">
   <div class="sec-eye">
-    <div class="eye-tag">⚡ <span data-i18n="auto_tag">הפתרונות שלנו</span></div>
     <h2 class="sec-title"><span data-i18n="auto_title">כל האוטומציות שלנו</span></h2>
     <p class="sec-sub" data-i18n="auto_sub">לחצו על קטגוריה לפרטים — או השתמשו במחשבון לבניית חבילה</p>
   </div>
@@ -433,7 +401,6 @@ body[data-mode="colleges"] .mq-section::after{background:linear-gradient(to left
 <!-- ══ PLATFORMS ══ -->
 <section id="s-platforms" class="reveal">
   <div class="sec-eye" style="padding:0 48px;max-width:1140px;margin:0 auto 8px;">
-    <div class="eye-tag">🔗 <span data-i18n="plat_tag">חיבורים</span></div>
     <h2 class="sec-title"><span data-i18n="plat_title">מחברים כל פלטפורמה שתבחרו</span></h2>
   </div>
   <div class="mq-section" id="mq-section">
@@ -497,10 +464,11 @@ body[data-mode="colleges"] .mq-section::after{background:linear-gradient(to left
   <div class="wb">
     <!-- step1 -->
     <div id="wz1">
-      <div class="s1t"><h2 data-i18n="wz1h">אתם מי?</h2><p data-i18n="wz1p">בחרו את סוג הארגון לראות אוטומציות מתאימות</p></div>
-      <div class="tcards">
+      <div class="s1t"><h2 style="font-size:clamp(26px,3.5vw,40px);letter-spacing:-1.5px;" data-i18n="wz1p">בחרו את סוג הארגון</h2></div>
+      <div class="tcards" style="grid-template-columns:1fr 1fr 1fr;max-width:860px;">
         <div class="tcard" onclick="pickType('companies',this)"><span class="tc-ic">🏢</span><div class="tc-n" data-i18n="tc_co">חברה / ארגון</div><div class="tc-d" data-i18n="tc_cod">עסק, חברה, ארגון עם תהליכים עסקיים</div></div>
         <div class="tcard" onclick="pickType('colleges',this)"><span class="tc-ic">🎓</span><div class="tc-n" data-i18n="tc_ed">מכללה / אוניברסיטה</div><div class="tc-d" data-i18n="tc_edd">מוסד אקדמי עם סטודנטים ומרצים</div></div>
+        <div class="tcard" onclick="pickType('other',this)"><span class="tc-ic">💡</span><div class="tc-n" data-i18n="tc_ot">אחר</div><div class="tc-d" data-i18n="tc_otd">עמותה, מוסד ציבורי, סטארטאפ או כל גוף אחר</div></div>
       </div>
     </div>
     <!-- step2 -->
@@ -595,7 +563,7 @@ const T={
     cust_h:'יש לכם רעיון משלכם?',cust_p:'לא מצאתם מה שחיפשתם? ספרו לנו אילו פלטפורמות משתמשים, אילו תהליכים חוזרים — ואנחנו נחשוב יחד.',
     ct1:'חיבור בין פלטפורמות',ct2:'תהליך ייחודי לעסק',ct3:'אינטגרציה עם מערכת קיימת',ct4:'דוחות אוטומטיים',ct5:'ניתוב חכם של מידע',cust_btn:'ספרו לנו על הרעיון',
     cta_h:'מוכנים להתחיל?',cta_p:'השאירו פרטים ונחזור אליכם תוך יום עסקים',cta_btn:'השאירו פרטים ונחזור אליכם',
-    wz1h:'אתם מי?',wz1p:'בחרו את סוג הארגון',tc_co:'חברה / ארגון',tc_cod:'עסק, חברה, ארגון עם תהליכים עסקיים',tc_ed:'מכללה / אוניברסיטה',tc_edd:'מוסד אקדמי עם סטודנטים ומרצים',
+    wz1p:'בחרו את סוג הארגון',tc_co:'חברה / ארגון',tc_cod:'עסק, חברה, ארגון עם תהליכים עסקיים',tc_ed:'מכללה / אוניברסיטה',tc_edd:'מוסד אקדמי עם סטודנטים ומרצים',
     wz2h:'אילו אוטומציות מעניינות?',wz2p:'לחצו על כל מה שרלוונטי',picked:'נבחרו:',to_results:'הצג תוצאות →',back:'חזרה',
     wz3h:'הערכת ערך — החבילה שלכם',price_lbl:'טווח השקעה משוער',price_note:'* מחיר סופי לפי התאמות ספציפיות | ייעוץ ראשוני ללא עלות',
     sel_h:'קטגוריות שבחרתם:',ch1h:'⏱️ שעות חסכון/חודש',ch1p:'לפני ואחרי',ch2h:'📈 ROI ל-6 חודשים',ch2p:'תשואה על ההשקעה',
@@ -633,7 +601,7 @@ const T={
     cust_h:'Have your own idea?',cust_p:"Didn't find what you were looking for? Tell us which platforms you use and which processes repeat — we'll figure out how to automate them.",
     ct1:'Platform connections',ct2:'Business-specific workflow',ct3:'Integration with existing system',ct4:'Automated reports',ct5:'Smart data routing',cust_btn:'Tell us your idea',
     cta_h:'Ready to start?',cta_p:'Leave your details and we\'ll get back to you within one business day',cta_btn:'Leave your details',
-    wz1h:'Who are you?',wz1p:'Choose your organization type',tc_co:'Company / Organization',tc_cod:'Business, company or organization with business processes',tc_ed:'College / University',tc_edd:'Academic institution with students and lecturers',
+    wz1p:'Choose your organization type',tc_co:'Company / Organization',tc_cod:'Business, company or organization with business processes',tc_ed:'College / University',tc_edd:'Academic institution with students and lecturers',tc_ot:'Other',tc_otd:'Non-profit, public institution, startup or any other type',
     wz2h:'Which automations interest you?',wz2p:'Click anything that seems relevant — pick as many as you like',picked:'Selected:',to_results:'Show results →',back:'Back',
     wz3h:'Value estimate — your package',price_lbl:'Estimated investment range',price_note:'* Final price depends on specific customizations | First consultation free',
     sel_h:'Categories you selected:',ch1h:'⏱️ Hours saved per month',ch1p:'Before vs after',ch2h:'📈 ROI over 6 months',ch2p:'Return on investment',
@@ -790,7 +758,6 @@ if(dot){
    BUILD MARQUEE ROWS
 ══════════════════════════════════════════════ */
 function buildMarquee(){
-  const rows=[['mq1','mq2','mq3'],3];
   const chunk=Math.ceil(PLATFORMS.length/3);
   const r1=PLATFORMS.slice(0,chunk);
   const r2=PLATFORMS.slice(chunk,chunk*2);
@@ -798,9 +765,9 @@ function buildMarquee(){
   [r1,r2,r3].forEach((row,i)=>{
     const el=document.getElementById('mq'+(i+1));
     if(!el)return;
-    // duplicate for seamless loop
-    const doubled=[...row,...row];
-    el.innerHTML=doubled.map(p=>`<span class="plat-pill">${p}</span>`).join('');
+    // Triple the content so -50% translate always shows seamless content
+    const tripled=[...row,...row,...row];
+    el.innerHTML=tripled.map(p=>`<span class="plat-pill">${p}</span>`).join('');
   });
 }
 buildMarquee();
@@ -838,12 +805,10 @@ function applyLang(){
 /* ══════════════════════════════════════════════
    MODE (hero buttons)
 ══════════════════════════════════════════════ */
-/* MODE with brand colors */
-const BG={all:'#000F61',companies:'#38B6FF',colleges:'#0A59EB'};
+
 function setMode(m){
   mode=m;
-  document.getElementById('page-bg').style.background=BG[m];
-  document.body.dataset.mode=m==='all'?'':m;
+  /* bg color removed */
   // button states
   document.getElementById('mb-co').className='mode-btn'+(m==='companies'?' active-co':'');
   document.getElementById('mb-ed').className='mode-btn'+(m==='colleges'?' active-ed':'');
@@ -1060,7 +1025,7 @@ function pickType(type,el){
   setTimeout(()=>goStep(2),340);
 }
 function buildWizGrid(){
-  const cats=CATS[wizType];
+  const cats=wizType==='other'?[...CATS.companies,...CATS.colleges]:CATS[wizType];
   document.getElementById('wiz-grid').innerHTML=cats.map(c=>`
     <div class="acard${wizPicked.includes(c.id)?' picked':''}" id="ac-${c.id}" onclick="toggleA('${c.id}')">
       <div class="ck"></div>

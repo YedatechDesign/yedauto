@@ -1,940 +1,951 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html id="root" lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>yeda | אוטומציות חכמות לעסקים וארגונים</title>
+<title>yedauto | Smart Automations</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-/* ══════════ ROOT ══════════ */
+/* ══ BRAND COLORS ══ */
 :root{
-  --navy:#00155A;--navy2:#001878;--navy3:#000D3A;
-  --blue:#1A56DB;--blue2:#2563EB;--bright:#4F8EF7;
-  --teal:#06B6D4;--gold:#F59E0B;--green:#10B981;
-  --red:#EF4444;--purple:#8B5CF6;
-  --text:#FFF;--t2:rgba(255,255,255,.72);--t3:rgba(255,255,255,.42);
-  --t4:rgba(255,255,255,.13);--card:rgba(255,255,255,.046);
-  --bdr:rgba(255,255,255,.09);
+  --db:#000F61; --nb:#0A59EB; --b1:#073B9D; --b2:#2870F6; --b3:#76A4F9; --b4:#C4D8FD;
+  --pb:#404B88; --dark:#1B1B1E; --muted:#A1A5C0; --light:#E8EAF5; --white:#F6F9FF;
+  --gold:#F59E0B; --green:#10B981; --red:#EF4444; --purple:#8B5CF6;
+  --t1:#fff; --t2:rgba(255,255,255,.72); --t3:rgba(255,255,255,.42); --t4:rgba(255,255,255,.13);
+  --card:rgba(255,255,255,.05); --bdr:rgba(255,255,255,.09);
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{font-family:'Heebo',sans-serif;background:var(--navy);color:var(--text);overflow-x:hidden;cursor:none;}
-canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;}
+body{font-family:'Heebo',sans-serif;color:var(--t1);overflow-x:hidden;cursor:none;min-height:100vh;}
 
-/* ══════════ CURSOR ══════════ */
-#cur{position:fixed;width:10px;height:10px;background:var(--bright);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:screen;transition:width .15s,height .15s,background .15s;}
-#cur-r{position:fixed;width:34px;height:34px;border:1.5px solid rgba(79,142,247,.45);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);}
-#mglow{position:fixed;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(79,142,247,.09) 0%,transparent 70%);pointer-events:none;z-index:1;transform:translate(-50%,-50%);transition:left .08s,top .08s;}
-@media(max-width:900px){#cur,#cur-r{display:none;}body{cursor:auto;}}
+/* ══ PAGE BG (animated tint) ══ */
+#page-bg{position:fixed;inset:0;z-index:-2;background:var(--db);transition:background 1.1s ease;}
+#mesh-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse 90% 60% at 10% 5%,rgba(10,89,235,.2) 0%,transparent 55%),
+             radial-gradient(ellipse 60% 50% at 85% 15%,rgba(40,112,246,.12) 0%,transparent 50%),
+             radial-gradient(ellipse 70% 40% at 50% 90%,rgba(118,164,249,.1) 0%,transparent 55%);}
 
-/* ══════════ HEADER ══════════ */
-header{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:16px 56px;background:rgba(0,14,58,.65);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);transition:background .3s;}
-header.scrolled{background:rgba(0,14,58,.95);}
-.logo{font-size:28px;font-weight:900;letter-spacing:-2px;color:#fff;display:flex;align-items:center;gap:6px;}
-.logo-dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--bright),var(--teal));animation:lp 2.5s ease infinite;}
-@keyframes lp{0%,100%{transform:scale(1)}50%{transform:scale(1.5);opacity:.6}}
+/* ══ SPLASH ══ */
+#splash{position:fixed;inset:0;z-index:9000;background:var(--db);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px;}
+#splash.done{animation:splashOut .9s ease forwards;}
+@keyframes splashOut{0%{opacity:1;transform:scale(1)}60%{opacity:1;transform:scale(1.04)}100%{opacity:0;transform:scale(1.08);visibility:hidden;pointer-events:none}}
+.splash-text{font-size:clamp(64px,12vw,140px);font-weight:900;letter-spacing:-4px;
+  background:linear-gradient(90deg,var(--b1) 0%,var(--b1) 5%,var(--b2) 35%,var(--b3) 50%,var(--b4) 58%,var(--b2) 70%,var(--b1) 95%,var(--b1) 100%);
+  background-size:300% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:stripeSwipe 1.6s cubic-bezier(.4,0,.2,1) forwards;}
+@keyframes stripeSwipe{0%{background-position:140% 0}100%{background-position:-40% 0}}
+.splash-line{width:0;height:2px;background:linear-gradient(90deg,transparent,var(--b2),transparent);animation:lineGrow 1.2s .4s ease forwards;}
+@keyframes lineGrow{to{width:min(400px,60vw)}}
+
+/* ══ CANVASES ══ */
+#trail-c{position:fixed;inset:0;z-index:8999;pointer-events:none;}
+#plat-c{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.5;}
+
+/* ══ HEADER ══ */
+header{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:14px 52px;background:rgba(0,15,97,.6);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);transition:background .3s;}
+header.scrolled{background:rgba(0,15,97,.94);}
+.logo{font-size:26px;font-weight:900;letter-spacing:-2px;color:#fff;display:flex;align-items:center;gap:6px;text-decoration:none;}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--b2),var(--b3));animation:lp 2.5s ease infinite;}
+@keyframes lp{0%,100%{transform:scale(1)}50%{transform:scale(1.6);opacity:.6}}
+.header-left{display:flex;align-items:center;gap:10px;}
+.lang-btn{padding:6px 14px;border-radius:18px;font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;
+  background:rgba(40,112,246,.15);border:1px solid rgba(40,112,246,.35);color:var(--b3);cursor:pointer;transition:all .2s;}
+.lang-btn:hover{background:rgba(40,112,246,.3);color:#fff;}
 .header-nav{display:flex;align-items:center;gap:8px;}
-.hn{padding:7px 18px;border-radius:20px;font-size:13px;font-weight:600;background:var(--card);border:1px solid var(--bdr);color:var(--t2);cursor:pointer;transition:all .2s;}
-.hn:hover{background:rgba(79,142,247,.15);border-color:rgba(79,142,247,.35);color:#fff;}
-.hn.accent{background:linear-gradient(135deg,var(--blue),var(--blue2));border-color:transparent;color:#fff;box-shadow:0 4px 18px rgba(26,86,219,.4);}
-.hn.accent:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(26,86,219,.55);}
+.hn{padding:7px 18px;border-radius:20px;font-size:13px;font-weight:600;background:var(--card);border:1px solid var(--bdr);color:var(--t2);cursor:pointer;transition:all .2s;font-family:'Heebo',sans-serif;}
+.hn:hover{background:rgba(40,112,246,.2);border-color:rgba(40,112,246,.4);color:#fff;}
+.hn.accent{background:linear-gradient(135deg,var(--b1),var(--b2));border-color:transparent;color:#fff;box-shadow:0 4px 20px rgba(10,89,235,.4);}
+.hn.accent:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(10,89,235,.55);}
 
-/* ══════════ HERO ══════════ */
-.hero{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:130px 40px 80px;}
-.hero-kicker{display:inline-flex;align-items:center;gap:8px;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.28);border-radius:30px;padding:7px 20px;font-size:13px;font-weight:700;color:var(--bright);letter-spacing:.7px;margin-bottom:30px;animation:fadeUp .8s ease both;}
+/* ══ HERO ══ */
+#s-hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 40px 80px;overflow:hidden;}
+.hero-kicker{display:inline-flex;align-items:center;gap:8px;background:rgba(40,112,246,.12);border:1px solid rgba(40,112,246,.3);border-radius:30px;padding:7px 20px;font-size:13px;font-weight:700;color:var(--b3);letter-spacing:.7px;margin-bottom:28px;animation:fadeUp .8s ease both;}
 .blink{animation:blink 1.2s steps(1) infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-.hero h1{font-size:clamp(40px,6vw,76px);font-weight:900;line-height:1.05;letter-spacing:-3px;margin-bottom:26px;animation:fadeUp .8s .1s ease both;}
-.grad{background:linear-gradient(90deg,var(--bright) 0%,var(--teal) 55%,var(--bright) 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:gs 4s linear infinite;}
+.hero h1{font-size:clamp(38px,5.8vw,76px);font-weight:900;line-height:1.06;letter-spacing:-3px;margin-bottom:22px;animation:fadeUp .8s .1s ease both;}
+.grad{background:linear-gradient(90deg,var(--nb) 0%,var(--b2) 40%,var(--b3) 70%,var(--nb) 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:gs 4s linear infinite;}
 @keyframes gs{0%{background-position:0% center}100%{background-position:200% center}}
-.hero-sub{font-size:18px;color:var(--t2);line-height:1.8;max-width:600px;margin:0 auto 44px;animation:fadeUp .8s .2s ease both;}
-.hero-btns{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;animation:fadeUp .8s .3s ease both;}
-.btn-calc{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--blue),var(--teal));border:none;border-radius:16px;padding:17px 40px;font-family:'Heebo',sans-serif;font-size:17px;font-weight:900;color:#fff;cursor:pointer;box-shadow:0 8px 36px rgba(26,86,219,.5);transition:all .25s;animation:calcPulse 3s ease infinite;}
-@keyframes calcPulse{0%,100%{box-shadow:0 8px 36px rgba(26,86,219,.5)}50%{box-shadow:0 8px 52px rgba(6,182,212,.6)}}
-.btn-calc:hover{transform:translateY(-4px) scale(1.02);}
-.btn-ghost{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:15px 26px;font-family:'Heebo',sans-serif;font-size:15px;font-weight:600;color:var(--t2);cursor:pointer;transition:all .2s;}
-.btn-ghost:hover{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.2);}
-.scroll-hint{position:absolute;bottom:38px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11px;color:var(--t3);letter-spacing:1px;}
-.sa{width:22px;height:36px;border:2px solid rgba(255,255,255,.18);border-radius:11px;position:relative;}
-.sa::after{content:'';position:absolute;top:6px;left:50%;transform:translateX(-50%);width:4px;height:7px;background:var(--bright);border-radius:2px;animation:sb 1.8s ease infinite;}
-@keyframes sb{0%,100%{top:6px;opacity:1}80%{top:18px;opacity:0}}
+.hero-sub{font-size:17px;color:var(--t2);line-height:1.8;max-width:560px;margin:0 auto 44px;animation:fadeUp .8s .2s ease both;}
+/* 3 mode buttons */
+.mode-btns{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;animation:fadeUp .8s .3s ease both;margin-bottom:20px;}
+.mode-btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:14px;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .3s;border:2px solid var(--bdr);background:rgba(255,255,255,.05);color:var(--t2);}
+.mode-btn:hover{transform:translateY(-3px);}
+.mode-btn.active-co{background:linear-gradient(135deg,rgba(7,59,157,.6),rgba(40,112,246,.4));border-color:var(--b2);color:#fff;box-shadow:0 8px 30px rgba(7,59,157,.45);}
+.mode-btn.active-ed{background:linear-gradient(135deg,rgba(64,75,136,.7),rgba(10,89,235,.45));border-color:var(--b3);color:#fff;box-shadow:0 8px 30px rgba(64,75,136,.45);}
+.mode-btn.active-all{background:linear-gradient(135deg,rgba(40,112,246,.4),rgba(118,164,249,.25));border-color:var(--b3);color:#fff;box-shadow:0 8px 30px rgba(40,112,246,.3);}
+.wiz-hero-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--b1),var(--b2));border:none;border-radius:16px;padding:16px 38px;font-family:'Heebo',sans-serif;font-size:16px;font-weight:900;color:#fff;cursor:pointer;box-shadow:0 8px 36px rgba(10,89,235,.5);transition:all .25s;animation:fadeUp .8s .45s ease both,wph 3s 1s ease infinite;}
+@keyframes wph{0%,100%{box-shadow:0 8px 36px rgba(10,89,235,.5)}50%{box-shadow:0 8px 52px rgba(40,112,246,.7)}}
+.wiz-hero-btn:hover{transform:translateY(-4px) scale(1.02);}
+
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
-/* ══════════ STATS ══════════ */
-.stats-section{position:relative;z-index:10;padding:0 48px 70px;max-width:1160px;margin:0 auto;}
+/* ══ STATS ══ */
+#s-stats{position:relative;z-index:10;padding:0 48px 70px;max-width:1140px;margin:0 auto;}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--bdr);border-radius:22px;overflow:hidden;border:1px solid var(--bdr);}
-.sc{background:var(--navy);padding:32px 24px;text-align:center;position:relative;overflow:hidden;transition:background .3s;}
-.sc:hover{background:rgba(79,142,247,.07);}
-.sc::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(79,142,247,.15) 0%,transparent 65%);opacity:0;transition:opacity .3s;}
+.sc{background:var(--db);padding:30px 22px;text-align:center;position:relative;overflow:hidden;transition:background .3s;}
+.sc:hover{background:rgba(10,89,235,.1);}
+.sc::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(40,112,246,.18) 0%,transparent 65%);opacity:0;transition:opacity .3s;}
 .sc:hover::before{opacity:1;}
-.sn{font-size:48px;font-weight:900;letter-spacing:-2px;background:linear-gradient(135deg,var(--bright),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:7px;}
-.sl{font-size:13px;color:var(--t3);font-weight:500;line-height:1.5;}
+.sn{font-size:46px;font-weight:900;letter-spacing:-2px;background:linear-gradient(135deg,var(--b2),var(--b3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:7px;}
+.sl{font-size:13px;color:var(--t3);line-height:1.5;}
+
+/* ══ AUTOMATIONS SECTION ══ */
+#s-automations{position:relative;z-index:10;padding:0 48px 70px;max-width:1140px;margin:0 auto;}
+.sec-eye{text-align:center;margin-bottom:40px;}
+.eye-tag{display:inline-flex;align-items:center;gap:7px;background:rgba(40,112,246,.1);border:1px solid rgba(40,112,246,.25);border-radius:20px;padding:5px 16px;font-size:12px;font-weight:700;color:var(--b3);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;}
+.sec-title{font-size:clamp(24px,3.5vw,38px);font-weight:900;letter-spacing:-1.5px;margin-bottom:10px;}
+.sec-sub{font-size:15px;color:var(--t3);}
+.auto-filter-tabs{display:flex;justify-content:center;gap:8px;margin-bottom:32px;flex-wrap:wrap;}
+.aft{padding:8px 20px;border-radius:20px;font-family:'Heebo',sans-serif;font-size:13px;font-weight:600;color:var(--t3);background:var(--card);border:1px solid var(--bdr);cursor:pointer;transition:all .2s;}
+.aft.active,.aft:hover{color:#fff;background:rgba(40,112,246,.18);border-color:rgba(40,112,246,.38);}
+.auto-cats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+.auto-cat-card{background:var(--card);border:1px solid var(--bdr);border-radius:18px;padding:22px;transition:all .28s;position:relative;overflow:hidden;}
+.auto-cat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(40,112,246,.06),rgba(118,164,249,.04));opacity:0;transition:opacity .28s;border-radius:18px;}
+.auto-cat-card:hover{transform:translateY(-4px);border-color:rgba(40,112,246,.35);box-shadow:0 14px 40px rgba(0,0,0,.3);}
+.auto-cat-card:hover::before{opacity:1;}
+.acc-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.acc-ico{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;background:linear-gradient(135deg,rgba(40,112,246,.18),rgba(118,164,249,.1));border:1px solid rgba(40,112,246,.2);flex-shrink:0;}
+.acc-name{font-size:15px;font-weight:800;}
+.acc-count{font-size:11px;color:var(--t3);margin-top:2px;}
+.acc-items{display:flex;flex-wrap:wrap;gap:6px;}
+.acc-item{padding:4px 12px;border-radius:14px;font-size:12px;font-weight:600;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--t2);transition:all .2s;}
+.acc-item:hover{background:rgba(40,112,246,.15);border-color:rgba(40,112,246,.3);color:#fff;}
+
+/* ══ PLATFORMS SECTION ══ */
+#s-platforms{position:relative;z-index:10;padding:0 48px 70px;max-width:1140px;margin:0 auto;}
+.plat-visual{position:relative;height:260px;border-radius:24px;overflow:hidden;border:1px solid var(--bdr);background:rgba(255,255,255,.02);margin-bottom:20px;}
+#plat-c{border-radius:24px;}
+.plat-label{text-align:center;font-size:13px;color:var(--t3);}
+
+/* ══ CUSTOM SECTION ══ */
+#s-custom{position:relative;z-index:10;padding:0 48px 70px;max-width:1140px;margin:0 auto;}
+.custom-card{background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(40,112,246,.08));border:1px solid rgba(139,92,246,.28);border-radius:22px;padding:44px;display:flex;align-items:center;gap:36px;position:relative;overflow:hidden;}
+.custom-card::before{content:'';position:absolute;top:-80px;right:-80px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.18) 0%,transparent 70%);pointer-events:none;}
+.custom-ico{font-size:58px;flex-shrink:0;animation:float 4s ease infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.custom-body h3{font-size:24px;font-weight:900;margin-bottom:10px;}
+.custom-body h3 .gr{background:linear-gradient(90deg,var(--purple),var(--b2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.custom-body p{font-size:14px;color:var(--t2);line-height:1.75;margin-bottom:18px;}
+.custom-tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px;}
+.ctag{padding:4px 13px;border-radius:14px;font-size:12px;font-weight:600;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.22);color:var(--purple);}
+.btn-custom{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--purple),var(--b2));border:none;border-radius:12px;padding:12px 26px;font-family:'Heebo',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;transition:all .2s;box-shadow:0 6px 22px rgba(139,92,246,.3);}
+.btn-custom:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(139,92,246,.48);}
+
+/* ══ CTA SECTION ══ */
+#s-cta{position:relative;z-index:10;padding:60px 48px 80px;text-align:center;border-top:1px solid var(--bdr);overflow:hidden;}
+#s-cta::before{content:'';position:absolute;width:580px;height:580px;border-radius:50%;background:radial-gradient(circle,rgba(40,112,246,.1) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
+#s-cta h2{font-size:clamp(26px,4vw,44px);font-weight:900;letter-spacing:-1.5px;margin-bottom:12px;}
+#s-cta p{font-size:16px;color:var(--t2);margin-bottom:30px;max-width:460px;margin-left:auto;margin-right:auto;}
+.btn-cta{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--b1),var(--b2));border:none;border-radius:14px;padding:15px 40px;font-family:'Heebo',sans-serif;font-size:16px;font-weight:900;color:#fff;cursor:pointer;transition:all .25s;box-shadow:0 8px 30px rgba(10,89,235,.45);}
+.btn-cta:hover{transform:translateY(-3px) scale(1.02);}
+
+/* ══ REVEAL ══ */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
 .reveal.visible{opacity:1;transform:translateY(0);}
 
-/* ══════════ PLATFORMS ══════════ */
-.plat-section{position:relative;z-index:10;padding:0 48px 80px;max-width:1160px;margin:0 auto;}
-.sec-eye{text-align:center;margin-bottom:42px;}
-.eye-tag{display:inline-flex;align-items:center;gap:7px;background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.25);border-radius:20px;padding:5px 16px;font-size:12px;font-weight:700;color:var(--teal);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;}
-.sec-title{font-size:clamp(24px,3.5vw,38px);font-weight:900;letter-spacing:-1.5px;margin-bottom:10px;}
-.sec-sub{font-size:15px;color:var(--t3);}
-.plat-tabs{display:flex;justify-content:center;gap:8px;margin-bottom:32px;}
-.ptab{padding:8px 22px;border-radius:20px;font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;color:var(--t3);background:var(--card);border:1px solid var(--bdr);cursor:pointer;transition:all .2s;}
-.ptab.active,.ptab:hover{color:#fff;background:rgba(79,142,247,.15);border-color:rgba(79,142,247,.35);}
-.plat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;}
-.plat-card{background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:20px 14px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;cursor:default;transition:all .25s;position:relative;overflow:hidden;}
-.plat-card:hover{transform:translateY(-5px);border-color:rgba(79,142,247,.35);box-shadow:0 14px 36px rgba(0,0,0,.3);}
-.plat-card:hover .pico{transform:scale(1.15);}
-.pico{font-size:34px;transition:transform .25s;display:block;}
-.pico-img{width:38px;height:38px;border-radius:8px;object-fit:contain;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;transition:transform .25s;}
-.pname{font-size:12px;font-weight:700;color:var(--t2);}
-.pcat{font-size:10px;color:var(--t3);}
-.plat-panel{display:none;}
-.plat-panel.active{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;}
-
-/* ══════════ CUSTOM AUTO SECTION ══════════ */
-.custom-section{position:relative;z-index:10;padding:0 48px 80px;max-width:1160px;margin:0 auto;}
-.custom-card{background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(79,142,247,.08));border:1px solid rgba(139,92,246,.3);border-radius:24px;padding:48px;display:flex;align-items:center;gap:40px;position:relative;overflow:hidden;}
-.custom-card::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.2) 0%,transparent 70%);pointer-events:none;}
-.custom-ico{font-size:64px;flex-shrink:0;animation:float 4s ease infinite;}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.custom-body h3{font-size:26px;font-weight:900;letter-spacing:-.5px;margin-bottom:12px;}
-.custom-body h3 .gr{background:linear-gradient(90deg,var(--purple),var(--bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.custom-body p{font-size:15px;color:var(--t2);line-height:1.75;margin-bottom:22px;}
-.custom-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;}
-.ctag{padding:5px 14px;border-radius:16px;font-size:12px;font-weight:600;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);color:var(--purple);}
-.btn-custom{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--purple),var(--blue));border:none;border-radius:12px;padding:12px 28px;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:all .2s;box-shadow:0 6px 24px rgba(139,92,246,.35);}
-.btn-custom:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(139,92,246,.5);}
-
-/* ══════════ AUTOMATIONS BROWSE ══════════ */
-.browse-section{position:relative;z-index:10;padding:0 48px 80px;max-width:1160px;margin:0 auto;}
-.tabs-row{display:flex;justify-content:center;margin-bottom:40px;}
-.tabs{display:inline-flex;gap:6px;background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:18px;padding:6px;}
-.tbt{display:flex;align-items:center;gap:9px;padding:12px 32px;border:none;border-radius:12px;cursor:pointer;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;color:var(--t3);background:transparent;transition:all .28s;}
-.tbt:hover{color:var(--t2);}
-.tbt.active{color:#fff;background:linear-gradient(135deg,rgba(26,86,219,.55),rgba(79,142,247,.35));border:1px solid rgba(79,142,247,.45);box-shadow:0 4px 22px rgba(26,86,219,.4);}
-.tbadge{display:inline-flex;align-items:center;justify-content:center;width:23px;height:23px;border-radius:6px;font-size:12px;font-weight:900;background:rgba(255,255,255,.1);}
-.tbt.active .tbadge{background:rgba(79,142,247,.45);color:#fff;}
-.panel{display:none;}.panel.active{display:block;animation:fadeSlide .3s ease both;}
-@keyframes fadeSlide{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.categories{display:flex;flex-direction:column;gap:24px;}
-.cat-wrap{background:var(--card);border:1px solid var(--bdr);border-radius:20px;overflow:hidden;transition:border-color .3s;}
-.cat-wrap:hover{border-color:rgba(79,142,247,.2);}
-.cat-hdr{padding:18px 24px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.02);}
-.cat-ico-w{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;background:linear-gradient(135deg,rgba(79,142,247,.18),rgba(6,182,212,.1));border:1px solid rgba(79,142,247,.2);}
-.cat-n{font-size:16px;font-weight:800;}
-.cat-s{font-size:12px;color:var(--t3);margin-top:2px;}
-.cat-pill{margin-right:auto;background:rgba(79,142,247,.12);border:1px solid rgba(79,142,247,.22);border-radius:20px;padding:2px 12px;font-size:12px;font-weight:700;color:var(--bright);}
-.cards-g{padding:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(188px,1fr));gap:11px;}
-.crd{background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:15px;padding:20px 15px;cursor:pointer;transition:all .22s;display:flex;flex-direction:column;align-items:center;gap:11px;text-align:center;position:relative;overflow:hidden;}
-.crd-shine{position:absolute;inset:0;border-radius:15px;background:linear-gradient(135deg,rgba(255,255,255,.07),transparent 60%);opacity:0;transition:opacity .22s;}
-.crd:hover .crd-shine{opacity:1;}
-.crd:hover{transform:translateY(-5px);border-color:rgba(79,142,247,.42);box-shadow:0 14px 36px rgba(0,0,0,.32);}
-.crd-ico{width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:25px;background:linear-gradient(135deg,rgba(79,142,247,.15),rgba(6,182,212,.1));border:1px solid rgba(79,142,247,.2);transition:transform .22s;}
-.crd:hover .crd-ico{transform:scale(1.1) rotate(-4deg);}
-.crd-n{font-size:13px;font-weight:700;color:var(--text);line-height:1.4;}
-.crd-arr{font-size:11px;color:var(--bright);font-weight:700;opacity:0;transform:translateY(5px);transition:all .2s;}
-.crd:hover .crd-arr{opacity:1;transform:translateY(0);}
-
-/* ══════════ MODAL ══════════ */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,8,30,.88);backdrop-filter:blur(18px);z-index:1000;align-items:center;justify-content:center;padding:20px;}
-.overlay.show{display:flex;animation:oi .2s ease;}
+/* ══ WIZARD ══ */
+#wiz-ov{display:none;position:fixed;inset:0;background:rgba(0,5,25,.94);backdrop-filter:blur(22px);z-index:600;overflow-y:auto;}
+#wiz-ov.show{display:flex;flex-direction:column;animation:oi .2s ease;}
 @keyframes oi{from{opacity:0}to{opacity:1}}
-.modal{background:#00103E;border:1px solid rgba(79,142,247,.25);border-radius:24px;max-width:560px;width:100%;max-height:87vh;overflow-y:auto;animation:mi .28s cubic-bezier(.34,1.56,.64,1);}
-@keyframes mi{from{transform:translateY(22px) scale(.96);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
-.modal::-webkit-scrollbar{width:4px;}.modal::-webkit-scrollbar-thumb{background:rgba(79,142,247,.3);border-radius:4px;}
-.mt{padding:24px 24px 20px;border-bottom:1px solid rgba(255,255,255,.07);position:sticky;top:0;background:#00103E;border-radius:24px 24px 0 0;z-index:1;}
-.mc{position:absolute;top:18px;left:18px;width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:var(--t3);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
-.mc:hover{background:rgba(255,255,255,.15);color:#fff;}
-.mh{display:flex;align-items:center;gap:13px;}
-.mi-ico{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;background:linear-gradient(135deg,rgba(79,142,247,.2),rgba(6,182,212,.14));border:1px solid rgba(79,142,247,.22);flex-shrink:0;}
-.mtitle{font-size:20px;font-weight:900;letter-spacing:-.4px;margin-bottom:3px;}
-.mcat{font-size:12px;color:var(--t3);}
-.mb{padding:24px;}
-.mblk{margin-bottom:22px;}.mblk:last-child{margin-bottom:0;}
-.mlbl{font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:10px;}
-.pbox{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:13px;padding:15px 17px;font-size:14px;color:var(--t2);line-height:1.75;}
-.pbox::before{content:'⚡ הבעיה:';display:block;font-size:11px;font-weight:900;color:var(--gold);margin-bottom:7px;letter-spacing:.5px;}
-.sbox{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);border-radius:13px;padding:15px 17px;font-size:14px;color:var(--t2);line-height:1.75;}
-.sbox::before{content:'✅ הפתרון:';display:block;font-size:11px;font-weight:900;color:var(--green);margin-bottom:7px;letter-spacing:.5px;}
-.fl{display:flex;flex-direction:column;gap:7px;}
-.fi{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:9px;padding:10px 14px;font-size:13px;color:var(--t2);transition:all .2s;}
-.fi:hover{background:rgba(79,142,247,.08);border-color:rgba(79,142,247,.2);}
-.fd{width:5px;height:5px;border-radius:50%;background:var(--bright);flex-shrink:0;}
-.tr{display:flex;flex-wrap:wrap;gap:7px;}
-.tg{padding:4px 13px;border-radius:18px;font-size:12px;font-weight:600;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.2);color:var(--bright);}
-.mct{margin-top:22px;display:flex;justify-content:center;}
-.bm{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--blue),var(--blue2));border:none;border-radius:12px;padding:13px 30px;font-family:'Heebo',sans-serif;font-size:14px;font-weight:800;color:#fff;cursor:pointer;transition:all .2s;box-shadow:0 5px 20px rgba(37,99,235,.4);}
-.bm:hover{transform:translateY(-2px);box-shadow:0 9px 28px rgba(37,99,235,.55);}
-
-/* ══════════ CTA BOTTOM ══════════ */
-.cta-section{position:relative;z-index:10;padding:70px 48px 80px;text-align:center;border-top:1px solid var(--bdr);overflow:hidden;}
-.cta-section::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(79,142,247,.1) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
-.cta-section h2{font-size:clamp(26px,4vw,44px);font-weight:900;letter-spacing:-1.5px;margin-bottom:13px;}
-.cta-section p{font-size:16px;color:var(--t2);margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto;}
-.btn-cta{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--blue),var(--teal));border:none;border-radius:15px;padding:16px 42px;font-family:'Heebo',sans-serif;font-size:17px;font-weight:900;color:#fff;cursor:pointer;transition:all .25s;box-shadow:0 8px 32px rgba(26,86,219,.5);}
-.btn-cta:hover{transform:translateY(-3px) scale(1.02);}
-
-/* ══════════ WIZARD OVERLAY ══════════ */
-#wiz-overlay{display:none;position:fixed;inset:0;background:rgba(0,5,25,.95);backdrop-filter:blur(22px);z-index:500;overflow-y:auto;}
-#wiz-overlay.show{display:flex;flex-direction:column;}
-.wiz-header{display:flex;align-items:center;justify-content:space-between;padding:22px 44px;border-bottom:1px solid var(--bdr);position:sticky;top:0;background:rgba(0,5,25,.95);z-index:10;}
-.wiz-logo{font-size:24px;font-weight:900;letter-spacing:-1.5px;display:flex;align-items:center;gap:6px;}
-.wiz-close{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid var(--bdr);color:var(--t2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
-.wiz-close:hover{background:rgba(255,255,255,.16);color:#fff;}
-/* Steps indicator */
-.wiz-steps{display:flex;align-items:center;justify-content:center;gap:0;padding:28px 44px 0;}
-.ws{display:flex;align-items:center;gap:10px;}
-.ws-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;background:var(--t4);color:var(--t3);border:2px solid var(--bdr);transition:all .3s;}
-.ws-label{font-size:13px;font-weight:600;color:var(--t3);transition:color .3s;}
-.ws.active .ws-num{background:linear-gradient(135deg,var(--blue),var(--teal));color:#fff;border-color:transparent;box-shadow:0 4px 18px rgba(26,86,219,.45);}
-.ws.active .ws-label{color:#fff;}
-.ws.done .ws-num{background:var(--green);color:#fff;border-color:transparent;}
-.ws.done .ws-label{color:var(--green);}
-.ws-line{width:60px;height:2px;background:var(--bdr);margin:0 4px;transition:background .3s;}
-.ws-line.done{background:var(--green);}
-/* Wiz body */
-.wiz-body{flex:1;padding:36px 44px 60px;max-width:1000px;margin:0 auto;width:100%;}
-
-/* Step 1 */
-.step1-title{text-align:center;margin-bottom:36px;}
-.step1-title h2{font-size:32px;font-weight:900;letter-spacing:-1.5px;margin-bottom:10px;}
-.step1-title p{font-size:16px;color:var(--t2);}
-.type-cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:640px;margin:0 auto;}
-.type-card{background:var(--card);border:2px solid var(--bdr);border-radius:22px;padding:36px 28px;text-align:center;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
-.type-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s;}
-.type-card:nth-child(1)::before{background:radial-gradient(circle at 50% 0%,rgba(79,142,247,.15) 0%,transparent 60%);}
-.type-card:nth-child(2)::before{background:radial-gradient(circle at 50% 0%,rgba(6,182,212,.13) 0%,transparent 60%);}
-.type-card:hover,.type-card.sel{border-color:rgba(79,142,247,.5);box-shadow:0 16px 48px rgba(0,0,0,.35);}
-.type-card:hover::before,.type-card.sel::before{opacity:1;}
-.type-card.sel{border-color:var(--bright);}
-.tc-ico{font-size:54px;margin-bottom:16px;display:block;}
-.tc-name{font-size:20px;font-weight:900;margin-bottom:8px;}
-.tc-desc{font-size:14px;color:var(--t2);line-height:1.6;}
-
-/* Step 2 */
-.step2-header{text-align:center;margin-bottom:36px;}
-.step2-header h2{font-size:28px;font-weight:900;letter-spacing:-1px;margin-bottom:10px;}
-.step2-header p{font-size:15px;color:var(--t2);}
-.auto-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px;margin-bottom:36px;}
-.auto-card{background:rgba(255,255,255,.04);border:2px solid var(--bdr);border-radius:16px;padding:20px 14px;cursor:pointer;transition:all .22s;text-align:center;position:relative;user-select:none;}
-.auto-card .ac-check{position:absolute;top:10px;left:10px;width:22px;height:22px;border-radius:6px;border:2px solid rgba(255,255,255,.2);background:transparent;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .2s;}
-.auto-card.picked{border-color:var(--bright);background:rgba(79,142,247,.1);transform:scale(1.03);}
-.auto-card.picked .ac-check{background:var(--bright);border-color:var(--bright);color:#fff;}
-.auto-card.picked .ac-check::after{content:'✓';}
-.ac-ico{font-size:28px;margin-bottom:8px;display:block;transition:transform .2s;}
-.auto-card:hover .ac-ico{transform:scale(1.12);}
-.ac-name{font-size:13px;font-weight:700;line-height:1.4;}
-.ac-time{font-size:11px;color:var(--teal);font-weight:600;margin-top:4px;}
-.wiz-footer{display:flex;align-items:center;justify-content:space-between;padding:20px 0 0;border-top:1px solid var(--bdr);}
-.wf-info{font-size:14px;color:var(--t3);}
-.wf-info span{color:var(--bright);font-weight:700;}
-.wf-btns{display:flex;gap:10px;}
-.btn-prev{padding:11px 24px;border-radius:12px;background:var(--card);border:1px solid var(--bdr);font-family:'Heebo',sans-serif;font-size:14px;font-weight:700;color:var(--t2);cursor:pointer;transition:all .2s;}
+.wh{display:flex;align-items:center;justify-content:space-between;padding:18px 44px;border-bottom:1px solid var(--bdr);position:sticky;top:0;background:rgba(0,5,25,.95);z-index:10;}
+.wh-logo{font-size:22px;font-weight:900;letter-spacing:-1.5px;display:flex;align-items:center;gap:6px;}
+.wh-close{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.07);border:1px solid var(--bdr);color:var(--t2);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.wh-close:hover{background:rgba(255,255,255,.16);color:#fff;}
+.wiz-steps{display:flex;align-items:center;justify-content:center;gap:0;padding:26px 44px 0;}
+.ws{display:flex;align-items:center;gap:9px;}
+.wsn{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;background:var(--t4);color:var(--t3);border:2px solid var(--bdr);transition:all .3s;}
+.wsl{font-size:12px;font-weight:600;color:var(--t3);transition:color .3s;}
+.ws.active .wsn{background:linear-gradient(135deg,var(--b1),var(--b2));color:#fff;border-color:transparent;box-shadow:0 4px 16px rgba(10,89,235,.4);}
+.ws.active .wsl{color:#fff;}
+.ws.done .wsn{background:var(--green);color:#fff;border-color:transparent;}
+.ws.done .wsl{color:var(--green);}
+.wsl2{width:52px;height:2px;background:var(--bdr);margin:0 3px;transition:background .3s;}
+.wsl2.done{background:var(--green);}
+.wb{flex:1;padding:34px 44px 60px;max-width:980px;margin:0 auto;width:100%;}
+/* step1 */
+.s1t{text-align:center;margin-bottom:34px;}
+.s1t h2{font-size:30px;font-weight:900;letter-spacing:-1px;margin-bottom:9px;}
+.s1t p{font-size:15px;color:var(--t2);}
+.tcards{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:620px;margin:0 auto;}
+.tcard{background:var(--card);border:2px solid var(--bdr);border-radius:20px;padding:34px 26px;text-align:center;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
+.tcard:hover,.tcard.sel{border-color:rgba(40,112,246,.55);box-shadow:0 16px 44px rgba(0,0,0,.32);}
+.tcard.sel{background:rgba(40,112,246,.1);}
+.tc-ic{font-size:52px;margin-bottom:14px;display:block;}
+.tc-n{font-size:19px;font-weight:900;margin-bottom:7px;}
+.tc-d{font-size:13px;color:var(--t2);line-height:1.6;}
+/* step2 */
+.s2h{text-align:center;margin-bottom:32px;}
+.s2h h2{font-size:26px;font-weight:900;letter-spacing:-.8px;margin-bottom:8px;}
+.s2h p{font-size:14px;color:var(--t2);}
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:11px;margin-bottom:32px;}
+.acard{background:rgba(255,255,255,.04);border:2px solid var(--bdr);border-radius:14px;padding:18px 13px;cursor:pointer;transition:all .22s;text-align:center;user-select:none;position:relative;}
+.acard .ck{position:absolute;top:9px;left:9px;width:20px;height:20px;border-radius:5px;border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .2s;}
+.acard.picked{border-color:var(--b2);background:rgba(40,112,246,.12);transform:scale(1.03);}
+.acard.picked .ck{background:var(--b2);border-color:var(--b2);color:#fff;}
+.acard.picked .ck::after{content:'✓';}
+.ac-ic{font-size:26px;margin-bottom:7px;display:block;transition:transform .2s;}
+.acard:hover .ac-ic{transform:scale(1.1);}
+.ac-n{font-size:12px;font-weight:700;line-height:1.4;}
+.ac-t{font-size:10px;color:var(--b3);font-weight:600;margin-top:3px;}
+.wfooter{display:flex;align-items:center;justify-content:space-between;padding:18px 0 0;border-top:1px solid var(--bdr);}
+.wfi{font-size:13px;color:var(--t3);}
+.wfi span{color:var(--b3);font-weight:700;}
+.wfbtns{display:flex;gap:9px;}
+.btn-prev{padding:10px 22px;border-radius:11px;background:var(--card);border:1px solid var(--bdr);font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;color:var(--t2);cursor:pointer;transition:all .2s;}
 .btn-prev:hover{background:rgba(255,255,255,.1);color:#fff;}
-.btn-next{padding:12px 32px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--blue2));border:none;font-family:'Heebo',sans-serif;font-size:15px;font-weight:800;color:#fff;cursor:pointer;transition:all .2s;box-shadow:0 5px 20px rgba(26,86,219,.4);}
-.btn-next:hover{transform:translateY(-2px);box-shadow:0 9px 28px rgba(26,86,219,.55);}
-.btn-next:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.btn-next{padding:11px 30px;border-radius:11px;background:linear-gradient(135deg,var(--b1),var(--b2));border:none;font-family:'Heebo',sans-serif;font-size:14px;font-weight:800;color:#fff;cursor:pointer;transition:all .2s;box-shadow:0 5px 18px rgba(10,89,235,.38);}
+.btn-next:hover{transform:translateY(-2px);box-shadow:0 9px 26px rgba(10,89,235,.55);}
+.btn-next:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+/* step3 */
+.r-head{text-align:center;margin-bottom:28px;}
+.price-box{background:linear-gradient(135deg,rgba(16,185,129,.09),rgba(40,112,246,.07));border:1px solid rgba(16,185,129,.28);border-radius:18px;padding:26px;text-align:center;margin-bottom:24px;}
+.pl{font-size:13px;color:var(--t3);font-weight:600;margin-bottom:9px;letter-spacing:.5px;}
+.pr{font-size:44px;font-weight:900;letter-spacing:-2px;background:linear-gradient(135deg,var(--green),var(--b2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.pn{font-size:12px;color:var(--t3);margin-top:5px;}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.rcc{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:20px;}
+.rcc h4{font-size:13px;font-weight:800;margin-bottom:3px;}
+.rcc p{font-size:11px;color:var(--t3);margin-bottom:14px;}
+.rcc canvas{max-height:160px;}
+.slist{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:18px;margin-bottom:24px;}
+.slist h4{font-size:13px;font-weight:800;margin-bottom:12px;}
+.sitems{display:flex;flex-wrap:wrap;gap:7px;}
+.sitem{display:flex;align-items:center;gap:6px;background:rgba(40,112,246,.1);border:1px solid rgba(40,112,246,.22);border-radius:18px;padding:4px 13px;font-size:12px;font-weight:600;color:var(--b3);}
+/* step4 */
+.cw{max-width:500px;margin:0 auto;}
+.cw h2{font-size:24px;font-weight:900;letter-spacing:-.8px;margin-bottom:8px;text-align:center;}
+.cw p{font-size:14px;color:var(--t2);text-align:center;margin-bottom:26px;}
+.ff{margin-bottom:14px;}
+.ff label{display:block;font-size:12px;font-weight:700;color:var(--t2);margin-bottom:6px;}
+.ff input,.ff textarea,.ff select{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:12px 15px;font-family:'Heebo',sans-serif;font-size:13px;color:#fff;outline:none;transition:all .2s;}
+.ff input:focus,.ff textarea:focus{border-color:rgba(40,112,246,.5);background:rgba(40,112,246,.07);}
+.ff textarea{resize:vertical;min-height:80px;}
+.ff select option{background:#000F61;}
+.btn-sub{width:100%;padding:14px;border-radius:13px;background:linear-gradient(135deg,var(--b1),var(--b2));border:none;font-family:'Heebo',sans-serif;font-size:15px;font-weight:900;color:#fff;cursor:pointer;transition:all .25s;box-shadow:0 6px 26px rgba(10,89,235,.4);}
+.btn-sub:hover{transform:translateY(-2px);box-shadow:0 10px 34px rgba(40,112,246,.5);}
+.sbox{background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.28);border-radius:14px;padding:32px;text-align:center;display:none;}
+.sbox h3{font-size:20px;font-weight:900;color:var(--green);margin-bottom:8px;}
+.sbox p{font-size:14px;color:var(--t2);}
 
-/* Step 3 - Results */
-.results-header{text-align:center;margin-bottom:36px;}
-.results-header h2{font-size:28px;font-weight:900;letter-spacing:-1px;margin-bottom:8px;}
-.price-box{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(79,142,247,.08));border:1px solid rgba(16,185,129,.3);border-radius:20px;padding:28px;text-align:center;margin-bottom:28px;}
-.price-label{font-size:13px;color:var(--t3);font-weight:600;margin-bottom:10px;letter-spacing:.5px;}
-.price-range{font-size:46px;font-weight:900;letter-spacing:-2px;background:linear-gradient(135deg,var(--green),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
-.price-note{font-size:13px;color:var(--t3);}
-.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:28px;}
-.r-chart-card{background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:22px;}
-.r-chart-card h4{font-size:14px;font-weight:800;margin-bottom:4px;}
-.r-chart-card p{font-size:12px;color:var(--t3);margin-bottom:16px;}
-.r-chart-card canvas{max-height:170px;}
-.selected-list{background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:20px;margin-bottom:28px;}
-.selected-list h4{font-size:14px;font-weight:800;margin-bottom:14px;}
-.sel-items{display:flex;flex-wrap:wrap;gap:8px;}
-.sel-item{display:flex;align-items:center;gap:7px;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.22);border-radius:20px;padding:5px 14px;font-size:13px;font-weight:600;color:var(--bright);}
+/* ══ MODALS ══ */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,5,25,.88);backdrop-filter:blur(18px);z-index:700;align-items:center;justify-content:center;padding:20px;}
+.ov.show{display:flex;animation:oi .2s ease;}
+.mdl{background:#000D50;border:1px solid rgba(40,112,246,.25);border-radius:22px;max-width:560px;width:100%;max-height:87vh;overflow-y:auto;animation:mi .28s cubic-bezier(.34,1.56,.64,1);}
+@keyframes mi{from{transform:translateY(22px) scale(.96);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+.mdl::-webkit-scrollbar{width:4px;}.mdl::-webkit-scrollbar-thumb{background:rgba(40,112,246,.3);border-radius:4px;}
+.mt{padding:22px 22px 18px;border-bottom:1px solid rgba(255,255,255,.07);position:sticky;top:0;background:#000D50;border-radius:22px 22px 0 0;z-index:1;}
+.mc{position:absolute;top:16px;left:16px;width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:var(--t3);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.mc:hover{background:rgba(255,255,255,.14);color:#fff;}
+.mhd{display:flex;align-items:center;gap:12px;}
+.mi-ic{width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:25px;background:linear-gradient(135deg,rgba(40,112,246,.2),rgba(118,164,249,.12));border:1px solid rgba(40,112,246,.22);flex-shrink:0;}
+.mtt{font-size:19px;font-weight:900;letter-spacing:-.4px;}
+.mct{font-size:12px;color:var(--t3);}
+.mbd{padding:22px;}
+.mbl{margin-bottom:20px;}.mbl:last-child{margin-bottom:0;}
+.mlbl{font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:9px;}
+.pb{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:12px;padding:14px 16px;font-size:13px;color:var(--t2);line-height:1.75;}
+.pb::before{content:'⚡ הבעיה:';display:block;font-size:10px;font-weight:900;color:var(--gold);margin-bottom:6px;letter-spacing:.5px;}
+.sb{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);border-radius:12px;padding:14px 16px;font-size:13px;color:var(--t2);line-height:1.75;}
+.sb::before{content:'✅ הפתרון:';display:block;font-size:10px;font-weight:900;color:var(--green);margin-bottom:6px;letter-spacing:.5px;}
 
-/* Step 4 - Contact */
-.contact-wrap{max-width:520px;margin:0 auto;}
-.contact-wrap h2{font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:10px;text-align:center;}
-.contact-wrap p{font-size:15px;color:var(--t2);text-align:center;margin-bottom:30px;}
-.form-field{margin-bottom:16px;}
-.form-field label{display:block;font-size:13px;font-weight:700;color:var(--t2);margin-bottom:7px;}
-.form-field input,.form-field textarea,.form-field select{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:13px 16px;font-family:'Heebo',sans-serif;font-size:14px;color:var(--text);outline:none;transition:all .2s;}
-.form-field input:focus,.form-field textarea:focus{border-color:rgba(79,142,247,.5);background:rgba(79,142,247,.07);}
-.form-field textarea{resize:vertical;min-height:90px;}
-.form-field select option{background:#001040;}
-.btn-submit{width:100%;padding:15px;border-radius:14px;background:linear-gradient(135deg,var(--blue),var(--teal));border:none;font-family:'Heebo',sans-serif;font-size:16px;font-weight:900;color:#fff;cursor:pointer;transition:all .25s;box-shadow:0 6px 28px rgba(26,86,219,.45);}
-.btn-submit:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(6,182,212,.5);}
-.success-box{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);border-radius:16px;padding:36px;text-align:center;display:none;}
-.success-box h3{font-size:22px;font-weight:900;color:var(--green);margin-bottom:10px;}
-.success-box p{font-size:15px;color:var(--t2);}
-
-/* ══════════ MEDIA ══════════ */
 @media(max-width:900px){
-  header{padding:14px 20px;}
-  .hero{padding:110px 20px 70px;}
-  .stats-section,.plat-section,.custom-section,.browse-section,.cta-section{padding-left:20px;padding-right:20px;}
+  header{padding:12px 18px;}
+  .header-nav .hn:not(.accent){display:none;}
+  #s-hero{padding:100px 20px 60px;}
+  #s-stats,#s-automations,#s-platforms,#s-custom,#s-cta{padding-left:20px;padding-right:20px;}
   .stats-grid{grid-template-columns:1fr 1fr;}
-  .custom-card{flex-direction:column;padding:32px 24px;}
-  .wiz-body{padding:24px 20px 50px;}
-  .type-cards{grid-template-columns:1fr;}
-  .results-grid{grid-template-columns:1fr;}
-  .wiz-steps{padding:20px 20px 0;}
-  .ws-label{display:none;}
-  .ws-line{width:32px;}
+  .auto-cats-grid{grid-template-columns:1fr;}
+  .custom-card{flex-direction:column;padding:28px 22px;}
+  .wb{padding:22px 18px 50px;}
+  .tcards{grid-template-columns:1fr;}
+  .rgrid{grid-template-columns:1fr;}
+  .wiz-steps{padding:18px 18px 0;}
+  .wsl{display:none;}.wsl2{width:28px;}
+  body{cursor:auto;}.cursor-trail{display:none;}
 }
 </style>
 </head>
 <body>
-<canvas id="bg"></canvas>
-<div id="cur"></div><div id="cur-r"></div><div id="mglow"></div>
+
+<div id="page-bg"></div>
+<div id="mesh-bg"></div>
+
+<!-- ══ SPLASH ══ -->
+<div id="splash">
+  <div class="splash-text">yedauto</div>
+  <div class="splash-line"></div>
+</div>
+
+<!-- ══ CURSOR TRAIL ══ -->
+<canvas id="trail-c"></canvas>
 
 <!-- ══ HEADER ══ -->
 <header id="hdr">
-  <div class="logo"><div class="logo-dot"></div>yeda</div>
+  <div class="header-left">
+    <a class="logo" href="#"><div class="logo-dot"></div><span id="h-logo">yedauto</span></a>
+    <button class="lang-btn" id="lang-btn" onclick="toggleLang()">EN</button>
+  </div>
   <nav class="header-nav">
-    <button class="hn" onclick="scrollTo('.plat-section')">🔗 חיבורים</button>
-    <button class="hn" onclick="scrollTo('.browse-section')">⚡ אוטומציות</button>
-    <button class="hn" onclick="scrollTo('.custom-section')">💡 רעיון משלכם</button>
-    <button class="hn accent" onclick="openContact()">✉️ השאירו פרטים</button>
+    <button class="hn" onclick="setMode('companies')"><span data-i18n="nav_co">🏢 חברות</span></button>
+    <button class="hn" onclick="setMode('colleges')"><span data-i18n="nav_ed">🎓 מכללות</span></button>
+    <button class="hn" onclick="scrollTo('#s-custom')"><span data-i18n="nav_idea">💡 רעיון משלכם</span></button>
+    <button class="hn accent" onclick="openContact()"><span data-i18n="nav_contact">✉️ השאירו פרטים</span></button>
   </nav>
 </header>
 
 <!-- ══ HERO ══ -->
-<section class="hero">
-  <div class="hero-kicker"><span class="blink">●</span> מבוסס AI · n8n · Supabase · ועוד 20+ פלטפורמות</div>
-  <h1>הטכנולוגיה עובדת —<br><span class="grad">אתם מתמקדים בצמיחה</span></h1>
-  <p class="hero-sub">אנחנו בונים אוטומציות חכמות שחוסכות עשרות שעות בחודש. בחרו את האוטומציות שמעניינות אתכם, קבלו הערכת מחיר, ונחזור אליכם.</p>
-  <div class="hero-btns">
-    <button class="btn-calc" onclick="openWizard()">🚀 בנו את חבילת האוטומציה שלכם</button>
-    <button class="btn-ghost" onclick="scrollTo('.browse-section')">ראו את כל האוטומציות ↓</button>
+<section id="s-hero">
+  <canvas id="plat-c" style="position:absolute;inset:0;pointer-events:none;"></canvas>
+  <div style="position:relative;z-index:2;">
+    <div class="hero-kicker"><span class="blink">●</span> <span data-i18n="kicker">n8n · Claude AI · Supabase · 40+ integrations</span></div>
+    <h1><span data-i18n="h1a">הטכנולוגיה עובדת —</span><br><span class="grad" data-i18n="h1b">אתם מתמקדים בצמיחה</span></h1>
+    <p class="hero-sub" data-i18n="hero_sub">אנחנו בונים אוטומציות חכמות שחוסכות עשרות שעות בחודש.<br>בחרו את הארגון שלכם כדי לראות את הפתרונות הרלוונטיים.</p>
+    <div class="mode-btns">
+      <button class="mode-btn" id="mb-co" onclick="setMode('companies')"><span data-i18n="btn_co">🏢 לחברות וארגונים</span></button>
+      <button class="mode-btn" id="mb-ed" onclick="setMode('colleges')"><span data-i18n="btn_ed">🎓 למכללות ואוניברסיטאות</span></button>
+      <button class="mode-btn" id="mb-all" onclick="setMode('all')"><span data-i18n="btn_all">הצג הכל</span></button>
+    </div>
+    <button class="wiz-hero-btn" onclick="openWizard()">🚀 <span data-i18n="wiz_btn">בנו את חבילת האוטומציה שלכם</span></button>
   </div>
-  <div class="scroll-hint"><div class="sa"></div><span>גללו לגלות</span></div>
 </section>
 
 <!-- ══ STATS ══ -->
-<section class="stats-section reveal">
+<section id="s-stats" class="reveal">
   <div class="stats-grid">
-    <div class="sc"><div class="sn" data-target="80" data-suf="%">0%</div><div class="sl">חיסכון בזמן<br>על משימות חוזרות</div></div>
-    <div class="sc"><div class="sn">24/7</div><div class="sl">המערכת עובדת<br>גם כשהצוות ישן</div></div>
-    <div class="sc"><div class="sn" data-target="0">0</div><div class="sl">טעויות אנוש<br>בתהליכים אוטומטיים</div></div>
-    <div class="sc"><div class="sn" data-target="3" data-pre="×">×0</div><div class="sl">יותר לידים<br>שמקבלים מענה בזמן</div></div>
+    <div class="sc"><div class="sn" data-target="80" data-suf="%">0%</div><div class="sl" data-i18n="s1">חיסכון בזמן על משימות חוזרות</div></div>
+    <div class="sc"><div class="sn">24/7</div><div class="sl" data-i18n="s2">המערכת עובדת גם כשהצוות ישן</div></div>
+    <div class="sc"><div class="sn" data-target="0">0</div><div class="sl" data-i18n="s3">טעויות אנוש בתהליכים אוטומטיים</div></div>
+    <div class="sc"><div class="sn" data-target="3" data-pre="×">×0</div><div class="sl" data-i18n="s4">יותר לידים שמקבלים מענה בזמן</div></div>
   </div>
+</section>
+
+<!-- ══ AUTOMATIONS ══ -->
+<section id="s-automations" class="reveal">
+  <div class="sec-eye">
+    <div class="eye-tag">⚡ <span data-i18n="auto_tag">הפתרונות שלנו</span></div>
+    <h2 class="sec-title"><span data-i18n="auto_title">כל האוטומציות שלנו</span></h2>
+    <p class="sec-sub" data-i18n="auto_sub">לחצו על קטגוריה לפרטים — או השתמשו במחשבון לבניית חבילה</p>
+  </div>
+  <div class="auto-filter-tabs" id="filter-tabs">
+    <button class="aft active" data-filter="all" onclick="filterAuto('all',this)" data-i18n="f_all">הכל</button>
+    <button class="aft" data-filter="companies" onclick="filterAuto('companies',this)" data-i18n="f_co">🏢 חברות</button>
+    <button class="aft" data-filter="colleges" onclick="filterAuto('colleges',this)" data-i18n="f_ed">🎓 מכללות</button>
+  </div>
+  <div class="auto-cats-grid" id="auto-grid"></div>
 </section>
 
 <!-- ══ PLATFORMS ══ -->
-<section class="plat-section reveal">
+<section id="s-platforms" class="reveal">
   <div class="sec-eye">
-    <div class="eye-tag">🔗 חיבורים</div>
-    <h2 class="sec-title">מחברים <span class="grad">כל פלטפורמה</span> שתבחרו</h2>
-    <p class="sec-sub">אנחנו יודעים לחבר בין כל הכלים שכבר משתמשים בהם — ולגרום להם לדבר אחד עם השני</p>
+    <div class="eye-tag">🔗 <span data-i18n="plat_tag">חיבורים</span></div>
+    <h2 class="sec-title"><span data-i18n="plat_title">מחברים כל פלטפורמה שתבחרו</span></h2>
+    <p class="sec-sub" data-i18n="plat_sub">אנחנו עובדים עם 40+ פלטפורמות ויכולים לחבר כמעט כל שניים ביניהן</p>
   </div>
-  <div class="plat-tabs">
-    <button class="ptab active" onclick="showPlat('all',this)">הכל</button>
-    <button class="ptab" onclick="showPlat('edu',this)">🎓 חינוך</button>
-    <button class="ptab" onclick="showPlat('biz',this)">🏢 עסקים</button>
-    <button class="ptab" onclick="showPlat('comm',this)">💬 תקשורת</button>
-    <button class="ptab" onclick="showPlat('data',this)">📊 נתונים</button>
-    <button class="ptab" onclick="showPlat('ai',this)">🤖 AI</button>
-  </div>
-  <div id="plat-all" class="plat-panel active"></div>
-  <div id="plat-edu" class="plat-panel"></div>
-  <div id="plat-biz" class="plat-panel"></div>
-  <div id="plat-comm" class="plat-panel"></div>
-  <div id="plat-data" class="plat-panel"></div>
-  <div id="plat-ai" class="plat-panel"></div>
+  <div class="plat-visual"><canvas id="plat-main-c" style="width:100%;height:100%;"></canvas></div>
+  <p class="plat-label" data-i18n="plat_label">הצבע על הקנבס לאינטראקציה</p>
 </section>
 
-<!-- ══ CUSTOM AUTOMATION ══ -->
-<section class="custom-section reveal">
+<!-- ══ CUSTOM ══ -->
+<section id="s-custom" class="reveal">
   <div class="custom-card">
     <div class="custom-ico">💡</div>
     <div class="custom-body">
-      <h3>יש לכם <span class="gr">רעיון משלכם</span>?</h3>
-      <p>לא מצאתם מה שחיפשתם? אין בעיה — ספרו לנו אילו פלטפורמות אתם משתמשים בהן, אילו תהליכים חוזרים על עצמם, ואנחנו נחשוב יחד איך לאוטומט אותם בצורה חכמה.</p>
+      <h3><span class="gr" data-i18n="cust_h">יש לכם רעיון משלכם?</span></h3>
+      <p data-i18n="cust_p">לא מצאתם מה שחיפשתם? ספרו לנו אילו פלטפורמות משתמשים בהן, אילו תהליכים חוזרים על עצמם — ואנחנו נחשוב יחד איך לאוטומט בצורה חכמה.</p>
       <div class="custom-tags">
-        <span class="ctag">חיבור בין פלטפורמות</span>
-        <span class="ctag">תהליך ייחודי לעסק שלכם</span>
-        <span class="ctag">אינטגרציה עם מערכת קיימת</span>
-        <span class="ctag">דוחות אוטומטיים</span>
-        <span class="ctag">ניתוב חכם של מידע</span>
+        <span class="ctag" data-i18n="ct1">חיבור בין פלטפורמות</span>
+        <span class="ctag" data-i18n="ct2">תהליך ייחודי לעסק</span>
+        <span class="ctag" data-i18n="ct3">אינטגרציה עם מערכת קיימת</span>
+        <span class="ctag" data-i18n="ct4">דוחות אוטומטיים</span>
+        <span class="ctag" data-i18n="ct5">ניתוב חכם של מידע</span>
       </div>
-      <button class="btn-custom" onclick="openCustom()">✉️ ספרו לנו על הרעיון שלכם</button>
+      <button class="btn-custom" onclick="openCustom()">✉️ <span data-i18n="cust_btn">ספרו לנו על הרעיון</span></button>
     </div>
   </div>
 </section>
 
-<!-- ══ AUTOMATIONS BROWSE ══ -->
-<section class="browse-section reveal">
-  <div class="sec-eye" style="margin-bottom:36px;">
-    <div class="eye-tag">⚡ כל הפתרונות</div>
-    <h2 class="sec-title">כל <span class="grad">האוטומציות שלנו</span></h2>
-    <p class="sec-sub">לחצו על כל אוטומציה לפרטים — או השתמשו במחשבון למעלה לבנות חבילה</p>
-  </div>
-  <div class="tabs-row">
-    <div class="tabs">
-      <button class="tbt active" data-tab="colleges" onclick="switchTab('colleges')">
-        <span>🎓</span>מכללות ואוניברסיטאות<span class="tbadge" id="cnt-c">9</span>
-      </button>
-      <button class="tbt" data-tab="orgs" onclick="switchTab('orgs')">
-        <span>🏢</span>ארגונים וחברות<span class="tbadge" id="cnt-o">7</span>
-      </button>
-    </div>
-  </div>
-  <div class="panel active" id="panel-colleges"><div class="categories" id="cats-colleges"></div></div>
-  <div class="panel" id="panel-orgs"><div class="categories" id="cats-orgs"></div></div>
+<!-- ══ CTA ══ -->
+<section id="s-cta" class="reveal">
+  <h2 data-i18n="cta_h">מוכנים להתחיל?</h2>
+  <p data-i18n="cta_p">השאירו פרטים ונחזור אליכם תוך יום עסקים לשיחת ייעוץ</p>
+  <button class="btn-cta" onclick="openContact()">✉️ <span data-i18n="cta_btn">השאירו פרטים ונחזור אליכם</span></button>
 </section>
 
-<!-- ══ BOTTOM CTA ══ -->
-<section class="cta-section reveal">
-  <h2>מוכנים להתחיל?</h2>
-  <p>השאירו פרטים ונחזור אליכם תוך יום עסקים לשיחת ייעוץ ראשונית ללא עלות</p>
-  <button class="btn-cta" onclick="openContact()">✉️ השאירו פרטים ונחזור אליכם</button>
-</section>
-
-<!-- ══ INFO MODAL ══ -->
-<div class="overlay" id="info-overlay" onclick="closeInfoOut(event)">
-  <div class="modal" id="info-modal">
-    <div class="mt">
-      <button class="mc" onclick="closeInfo()">✕</button>
-      <div class="mh">
-        <div class="mi-ico" id="mIco"></div>
-        <div><div class="mtitle" id="mTitle"></div><div class="mcat" id="mCat"></div></div>
+<!-- ══ WIZARD ══ -->
+<div id="wiz-ov">
+  <div class="wh">
+    <div class="wh-logo"><div class="logo-dot"></div>yedauto</div>
+    <div style="display:flex;align-items:center;gap:14px;"><span style="font-size:13px;color:var(--t3);" data-i18n="wiz_sub">בנו את חבילת האוטומציה שלכם</span><button class="wh-close" onclick="closeWizard()">✕</button></div>
+  </div>
+  <div class="wiz-steps">
+    <div class="ws active" id="ws1"><div class="wsn">1</div><div class="wsl" data-i18n="ws1">סוג ארגון</div></div>
+    <div class="wsl2" id="wl1"></div>
+    <div class="ws" id="ws2"><div class="wsn">2</div><div class="wsl" data-i18n="ws2">בחירת אוטומציות</div></div>
+    <div class="wsl2" id="wl2"></div>
+    <div class="ws" id="ws3"><div class="wsn">3</div><div class="wsl" data-i18n="ws3">הערכת ערך</div></div>
+    <div class="wsl2" id="wl3"></div>
+    <div class="ws" id="ws4"><div class="wsn">4</div><div class="wsl" data-i18n="ws4">פרטים</div></div>
+  </div>
+  <div class="wb">
+    <!-- step1 -->
+    <div id="wz1">
+      <div class="s1t"><h2 data-i18n="wz1h">אתם מי?</h2><p data-i18n="wz1p">בחרו את סוג הארגון לראות אוטומציות מתאימות</p></div>
+      <div class="tcards">
+        <div class="tcard" onclick="pickType('companies',this)"><span class="tc-ic">🏢</span><div class="tc-n" data-i18n="tc_co">חברה / ארגון</div><div class="tc-d" data-i18n="tc_cod">עסק, חברה, ארגון עם תהליכים עסקיים</div></div>
+        <div class="tcard" onclick="pickType('colleges',this)"><span class="tc-ic">🎓</span><div class="tc-n" data-i18n="tc_ed">מכללה / אוניברסיטה</div><div class="tc-d" data-i18n="tc_edd">מוסד אקדמי עם סטודנטים ומרצים</div></div>
       </div>
     </div>
-    <div class="mb" id="mBody"></div>
+    <!-- step2 -->
+    <div id="wz2" style="display:none;">
+      <div class="s2h"><h2 data-i18n="wz2h">אילו אוטומציות מעניינות?</h2><p data-i18n="wz2p">לחצו על כל מה שרלוונטי — אפשר לבחור כמה שרוצים</p></div>
+      <div class="agrid" id="wiz-grid"></div>
+      <div class="wfooter">
+        <div class="wfi"><span data-i18n="picked">נבחרו:</span> <span id="pick-cnt">0</span></div>
+        <div class="wfbtns"><button class="btn-prev" onclick="goStep(1)">←</button><button class="btn-next" id="btn3" onclick="goStep(3)" disabled data-i18n="to_results">הצג תוצאות →</button></div>
+      </div>
+    </div>
+    <!-- step3 -->
+    <div id="wz3" style="display:none;">
+      <div class="r-head"><h2 data-i18n="wz3h">הערכת ערך — <span class="grad">החבילה שלכם</span></h2></div>
+      <div class="price-box"><div class="pl" data-i18n="price_lbl">טווח השקעה משוער (הטמעה + 3 חודשים)</div><div class="pr" id="price-r">₪0 – ₪0</div><div class="pn" data-i18n="price_note">* מחיר סופי לפי התאמות ספציפיות | ייעוץ ראשוני ללא עלות</div></div>
+      <div class="slist"><h4 data-i18n="sel_h">קטגוריות שבחרתם:</h4><div class="sitems" id="sel-list"></div></div>
+      <div class="rgrid"><div class="rcc"><h4 data-i18n="ch1h">⏱️ שעות חסכון צפויות/חודש</h4><p data-i18n="ch1p">לפני ואחרי אוטומציה</p><canvas id="wch1"></canvas></div><div class="rcc"><h4 data-i18n="ch2h">📈 ROI ל-6 חודשים</h4><p data-i18n="ch2p">תשואה על ההשקעה</p><canvas id="wch2"></canvas></div></div>
+      <div class="wfooter"><div></div><div class="wfbtns"><button class="btn-prev" onclick="goStep(2)">← <span data-i18n="back">חזרה</span></button><button class="btn-next" onclick="goStep(4)" data-i18n="to_contact">השאירו פרטים ←</button></div></div>
+    </div>
+    <!-- step4 -->
+    <div id="wz4" style="display:none;">
+      <div class="cw">
+        <h2>🎉 <span data-i18n="wz4h">כמעט סיימנו</span></h2>
+        <p data-i18n="wz4p">השאירו פרטים ונחזור תוך יום עסקים עם הצעה מותאמת</p>
+        <div id="wf-wrap">
+          <div class="ff"><label data-i18n="lbl_name">שם מלא *</label><input id="wn" placeholder="ישראל ישראלי"></div>
+          <div class="ff"><label data-i18n="lbl_email">אימייל *</label><input type="email" id="we" placeholder="email@company.com"></div>
+          <div class="ff"><label data-i18n="lbl_phone">טלפון</label><input id="wp" placeholder="050-0000000"></div>
+          <div class="ff"><label data-i18n="lbl_org">שם הארגון</label><input id="wo" placeholder="שם החברה / מכללה"></div>
+          <div class="ff"><label data-i18n="lbl_notes">הערות נוספות</label><textarea id="wm"></textarea></div>
+          <button class="btn-sub" onclick="submitW()" data-i18n="sub_btn">🚀 שלחו — נחזור אליכם בהקדם</button>
+        </div>
+        <div class="sbox" id="wiz-ok"><div style="font-size:44px;margin-bottom:12px;">🎉</div><h3 data-i18n="ok_h">תודה! קיבלנו</h3><p data-i18n="ok_p">נחזור אליכם תוך יום עסקים.</p><button class="btn-prev" style="margin-top:16px;" onclick="closeWizard()" data-i18n="ok_close">סיום</button></div>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- ══ CONTACT MODAL ══ -->
-<div class="overlay" id="contact-overlay" onclick="closeContactOut(event)">
-  <div class="modal" style="max-width:500px;">
-    <div class="mt">
-      <button class="mc" onclick="closeContact()">✕</button>
-      <div class="mh">
-        <div class="mi-ico">✉️</div>
-        <div><div class="mtitle">השאירו פרטים</div><div class="mcat">ונחזור אליכם תוך יום עסקים</div></div>
+<div class="ov" id="co-ov" onclick="e=>{if(e.target===this)closeContact();}">
+  <div class="mdl" style="max-width:480px;">
+    <div class="mt"><button class="mc" onclick="closeContact()">✕</button><div class="mhd"><div class="mi-ic">✉️</div><div><div class="mtt" data-i18n="co_title">השאירו פרטים</div><div class="mct" data-i18n="co_sub">נחזור אליכם תוך יום עסקים</div></div></div></div>
+    <div class="mbd">
+      <div id="co-fw">
+        <div class="ff"><label data-i18n="lbl_name">שם מלא *</label><input id="cn" placeholder="ישראל ישראלי"></div>
+        <div class="ff"><label data-i18n="lbl_email">אימייל *</label><input type="email" id="ce" placeholder="email@company.com"></div>
+        <div class="ff"><label data-i18n="lbl_phone">טלפון</label><input id="cp" placeholder="050-0000000"></div>
+        <div class="ff"><label data-i18n="lbl_org">שם הארגון</label><input id="co2" placeholder="שם החברה / מכללה"></div>
+        <div class="ff"><label data-i18n="lbl_type">סוג ארגון</label><select id="ct"><option value="">בחרו...</option><option>מכללה / אוניברסיטה</option><option>חברה / ארגון</option><option>עמותה</option><option>אחר</option></select></div>
+        <div class="ff"><label data-i18n="lbl_msg">ספרו לנו</label><textarea id="cm" data-i18n="ph_msg" placeholder="אילו תהליכים חוזרים גוזלים לכם הכי הרבה זמן?"></textarea></div>
+        <button class="btn-sub" onclick="submitCo()" data-i18n="sub_btn">🚀 שלחו — נחזור אליכם בהקדם</button>
       </div>
-    </div>
-    <div class="mb">
-      <div id="contact-form-wrap">
-        <div class="form-field"><label>שם מלא *</label><input type="text" id="cf-name" placeholder="ישראל ישראלי"></div>
-        <div class="form-field"><label>אימייל *</label><input type="email" id="cf-email" placeholder="email@company.com"></div>
-        <div class="form-field"><label>טלפון</label><input type="tel" id="cf-phone" placeholder="050-0000000"></div>
-        <div class="form-field"><label>שם הארגון</label><input type="text" id="cf-org" placeholder="שם החברה / מכללה"></div>
-        <div class="form-field"><label>סוג הארגון</label>
-          <select id="cf-type">
-            <option value="">בחרו...</option>
-            <option>מכללה / אוניברסיטה</option>
-            <option>חברה / ארגון</option>
-            <option>עמותה / מגזר ציבורי</option>
-            <option>אחר</option>
-          </select>
-        </div>
-        <div class="form-field"><label>ספרו לנו קצת על הצרכים שלכם</label><textarea id="cf-msg" placeholder="אילו תהליכים חוזרים גוזלים לכם הכי הרבה זמן?"></textarea></div>
-        <button class="btn-submit" onclick="submitContact()">🚀 שלחו — נחזור אליכם בהקדם</button>
-      </div>
-      <div class="success-box" id="contact-success">
-        <div style="font-size:48px;margin-bottom:14px;">🎉</div>
-        <h3>תודה! קיבלנו את הפנייה</h3>
-        <p>צוות yeda יחזור אליכם תוך יום עסקים לשיחת ייעוץ ראשונית.</p>
-      </div>
+      <div class="sbox" id="co-ok"><div style="font-size:44px;margin-bottom:12px;">🎉</div><h3 data-i18n="ok_h">תודה! קיבלנו</h3><p data-i18n="ok_p">נחזור אליכם תוך יום עסקים.</p></div>
     </div>
   </div>
 </div>
 
-<!-- ══ CUSTOM REQUEST MODAL ══ -->
-<div class="overlay" id="custom-overlay" onclick="closeCustomOut(event)">
-  <div class="modal" style="max-width:520px;">
-    <div class="mt">
-      <button class="mc" onclick="closeCustomModal()">✕</button>
-      <div class="mh">
-        <div class="mi-ico">💡</div>
-        <div><div class="mtitle">ספרו לנו על הרעיון</div><div class="mcat">נחשוב יחד איך לאוטומט</div></div>
+<!-- ══ CUSTOM MODAL ══ -->
+<div class="ov" id="cu-ov" onclick="e=>{if(e.target===this)closeCustom();}">
+  <div class="mdl" style="max-width:500px;">
+    <div class="mt"><button class="mc" onclick="closeCustom()">✕</button><div class="mhd"><div class="mi-ic">💡</div><div><div class="mtt" data-i18n="cu_title">ספרו לנו על הרעיון</div><div class="mct" data-i18n="cu_sub">נחשוב יחד איך לאוטומט</div></div></div></div>
+    <div class="mbd">
+      <div id="cu-fw">
+        <div class="ff"><label data-i18n="cu_lbl1">שם ואימייל ליצירת קשר *</label><input id="cuc" placeholder="שם · email@company.com"></div>
+        <div class="ff"><label data-i18n="cu_lbl2">אילו פלטפורמות / כלים אתם משתמשים?</label><input id="cup" placeholder="Gmail, Monday, WhatsApp..."></div>
+        <div class="ff"><label data-i18n="cu_lbl3">תארו את התהליך שרוצים לאוטומט</label><textarea id="cud" style="min-height:110px;" data-i18n="cu_ph" placeholder="לדוג׳: כל שבוע מוציאים דוח ידני ושולחים במייל..."></textarea></div>
+        <div class="ff"><label data-i18n="cu_lbl4">כמה שעות לוקח בשבוע?</label><select id="cuh"><option value="">בחרו...</option><option>פחות מ-2 שעות</option><option>2-5 שעות</option><option>5-10 שעות</option><option>יותר מ-10 שעות</option></select></div>
+        <button class="btn-sub" onclick="submitCu()" data-i18n="cu_btn">💡 שלחו — נחקור אפשרויות</button>
       </div>
-    </div>
-    <div class="mb">
-      <div id="custom-form-wrap">
-        <div class="form-field"><label>שם ואימייל ליצירת קשר *</label><input type="text" id="cust-contact" placeholder="שם · email@company.com"></div>
-        <div class="form-field"><label>אילו פלטפורמות / כלים אתם משתמשים?</label><input type="text" id="cust-plat" placeholder="לדוג׳: Gmail, Monday, Moodle, WhatsApp..."></div>
-        <div class="form-field"><label>תארו את התהליך שרוצים לאוטומט</label><textarea id="cust-desc" style="min-height:120px;" placeholder="לדוג׳: כל שבוע אנחנו מוציאים ידנית דוח מ-Google Sheets ושולחים אותו ב-WhatsApp לכל המנהלים..."></textarea></div>
-        <div class="form-field"><label>כמה שעות זה לוקח לכם בשבוע? (בערך)</label>
-          <select id="cust-hours">
-            <option value="">בחרו...</option><option>פחות מ-2 שעות</option><option>2-5 שעות</option><option>5-10 שעות</option><option>יותר מ-10 שעות</option>
-          </select>
-        </div>
-        <button class="btn-submit" onclick="submitCustom()">💡 שלחו את הרעיון — נחקור אפשרויות</button>
-      </div>
-      <div class="success-box" id="custom-success">
-        <div style="font-size:48px;margin-bottom:14px;">✨</div>
-        <h3>קיבלנו! אנחנו חוקרים</h3>
-        <p>נחזור אליכם תוך 2 ימי עסקים עם הצעה לפתרון אוטומטי מותאם אישית.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ WIZARD ══ -->
-<div id="wiz-overlay">
-  <div class="wiz-header">
-    <div class="wiz-logo"><div class="logo-dot"></div>yeda</div>
-    <div style="display:flex;align-items:center;gap:16px;">
-      <span style="font-size:14px;color:var(--t3);">בנו את חבילת האוטומציה שלכם</span>
-      <button class="wiz-close" onclick="closeWizard()">✕</button>
-    </div>
-  </div>
-  <!-- Steps bar -->
-  <div class="wiz-steps">
-    <div class="ws active" id="ws1"><div class="ws-num">1</div><div class="ws-label">סוג ארגון</div></div>
-    <div class="ws-line" id="wl1"></div>
-    <div class="ws" id="ws2"><div class="ws-num">2</div><div class="ws-label">בחירת אוטומציות</div></div>
-    <div class="ws-line" id="wl2"></div>
-    <div class="ws" id="ws3"><div class="ws-num">3</div><div class="ws-label">הערכת ערך</div></div>
-    <div class="ws-line" id="wl3"></div>
-    <div class="ws" id="ws4"><div class="ws-num">4</div><div class="ws-label">השאירו פרטים</div></div>
-  </div>
-  <div class="wiz-body">
-    <!-- STEP 1 -->
-    <div id="wstep1">
-      <div class="step1-title"><h2>אתם <span class="grad">מי?</span></h2><p>בחרו את סוג הארגון שלכם כדי שנציג את האוטומציות המתאימות</p></div>
-      <div class="type-cards">
-        <div class="type-card" onclick="pickType('colleges',this)">
-          <span class="tc-ico">🎓</span>
-          <div class="tc-name">מכללה / אוניברסיטה</div>
-          <div class="tc-desc">מוסד אקדמי עם סטודנטים, מרצים, גיוס ולמידה דיגיטלית</div>
-        </div>
-        <div class="type-card" onclick="pickType('orgs',this)">
-          <span class="tc-ico">🏢</span>
-          <div class="tc-name">ארגון / חברה</div>
-          <div class="tc-desc">עסק, חברה, ארגון או עמותה עם תהליכים עסקיים</div>
-        </div>
-      </div>
-    </div>
-    <!-- STEP 2 -->
-    <div id="wstep2" style="display:none;">
-      <div class="step2-header">
-        <h2>אילו <span class="grad">אוטומציות</span> מעניינות אתכם?</h2>
-        <p>לחצו על כל האוטומציות שנשמעות רלוונטיות — אפשר לבחור כמה שרוצים</p>
-      </div>
-      <div class="auto-grid" id="wiz-auto-grid"></div>
-      <div class="wiz-footer">
-        <div class="wf-info">נבחרו: <span id="picked-count">0</span> אוטומציות</div>
-        <div class="wf-btns">
-          <button class="btn-prev" onclick="goStep(1)">← חזרה</button>
-          <button class="btn-next" id="btn-to-3" onclick="goStep(3)" disabled>הצג תוצאות →</button>
-        </div>
-      </div>
-    </div>
-    <!-- STEP 3 -->
-    <div id="wstep3" style="display:none;">
-      <div class="results-header">
-        <h2>הנה מה שקיבלתם — <span class="grad">הערכת ערך</span></h2>
-      </div>
-      <div class="price-box">
-        <div class="price-label">טווח השקעה משוער (הטמעה + 3 חודשים תחזוקה)</div>
-        <div class="price-range" id="price-range">₪0 – ₪0</div>
-        <div class="price-note">* מחיר סופי נקבע לפי התאמות ספציפיות | ייעוץ ראשוני ללא עלות</div>
-      </div>
-      <div class="selected-list">
-        <h4>האוטומציות שבחרתם:</h4>
-        <div class="sel-items" id="sel-items-list"></div>
-      </div>
-      <div class="results-grid">
-        <div class="r-chart-card"><h4>⏱️ שעות חסכון צפויות בחודש</h4><p>השוואה לפני ואחרי</p><canvas id="wiz-chart-time"></canvas></div>
-        <div class="r-chart-card"><h4>📈 ROI משוער לאחר 6 חודשים</h4><p>תשואה על ההשקעה</p><canvas id="wiz-chart-roi"></canvas></div>
-      </div>
-      <div class="wiz-footer">
-        <div class="wf-info"></div>
-        <div class="wf-btns">
-          <button class="btn-prev" onclick="goStep(2)">← שנו בחירות</button>
-          <button class="btn-next" onclick="goStep(4)">השאירו פרטים ←</button>
-        </div>
-      </div>
-    </div>
-    <!-- STEP 4 -->
-    <div id="wstep4" style="display:none;">
-      <div class="contact-wrap">
-        <h2>כמעט <span class="grad">סיימנו</span> 🎉</h2>
-        <p>השאירו פרטים ונחזור אליכם תוך יום עסקים עם הצעה מותאמת</p>
-        <div id="wiz-form-wrap">
-          <div class="form-field"><label>שם מלא *</label><input type="text" id="wf-name" placeholder="ישראל ישראלי"></div>
-          <div class="form-field"><label>אימייל *</label><input type="email" id="wf-email" placeholder="email@company.com"></div>
-          <div class="form-field"><label>טלפון</label><input type="tel" id="wf-phone" placeholder="050-0000000"></div>
-          <div class="form-field"><label>שם הארגון</label><input type="text" id="wf-org" placeholder="שם החברה / מכללה"></div>
-          <div class="form-field"><label>הערות נוספות</label><textarea id="wf-msg" placeholder="שאלות, הבהרות, תהליכים ספציפיים..."></textarea></div>
-          <button class="btn-submit" onclick="submitWizard()">🚀 שלחו — נחזור אליכם בהקדם</button>
-        </div>
-        <div class="success-box" id="wiz-success">
-          <div style="font-size:48px;margin-bottom:14px;">🎉</div>
-          <h3>תודה! קיבלנו את הפנייה</h3>
-          <p>צוות yeda יחזור אליכם תוך יום עסקים עם הצעה מותאמת לחבילה שבחרתם.</p>
-          <button class="btn-prev" style="margin-top:20px;" onclick="closeWizard()">סיום</button>
-        </div>
-      </div>
+      <div class="sbox" id="cu-ok"><div style="font-size:44px;margin-bottom:12px;">✨</div><h3 data-i18n="cu_ok_h">קיבלנו! אנחנו חוקרים</h3><p data-i18n="cu_ok_p">נחזור תוך 2 ימי עסקים עם הצעה מותאמת.</p></div>
     </div>
   </div>
 </div>
 
 <script>
 /* ══════════════════════════════════════════════
-   DATA
+   TRANSLATIONS
 ══════════════════════════════════════════════ */
-const AUTOS=[
-  {id:"c1",theme:"colleges",category:"שיווק וגיוס סטודנטים",cat_icon:"📣",icon:"🎯",title:"ניהול לידים ממועמדים",problem:"פניות ממועמדים מגיעות ממקורות שונים ואובדות בדרך — אין מקום אחד שמרכז הכל.",solution:"המערכת קולטת אוטומטית כל ליד מכל מקור ומרכזת הכל בטבלה אחת. צוות הגיוס רואה את כל המידע, יכול לסנן לפי תחום לימוד ולעקוב אחרי כל מועמד.",features:["קליטת לידים מטפסי אתר ודפי נחיתה","שליחת מידע אוטומטי על מסלולי לימוד","סדרת מיילים אוטומטית למועמד","יצירת דוחות על מתעניינים חדשים"],tags:["n8n","Supabase","Gmail"],hrs:8,price_lo:1200,price_hi:2200},
-  {id:"c2",theme:"colleges",category:"שיווק וגיוס סטודנטים",cat_icon:"📣",icon:"📧",title:"מיילים אוטומטיים למועמדים",problem:"מועמדים שמשאירים פרטים לא מקבלים מענה מיידי — וטיפול ידני במאות אנשים בשבוע הוא בלתי אפשרי.",solution:"ברגע שמועמד ממלא טופס, המערכת שולחת אוטומטית מייל עם מידע על התוכנית הרלוונטית ופרטי יצירת קשר.",features:["מייל אישי מיד לאחר השארת פרטים","סדרת מיילים לאורך תהליך ההרשמה","תוכן מותאם לפי תחום לימוד","תזכורות לימים פתוחים"],tags:["Gmail","n8n","Tally"],hrs:5,price_lo:900,price_hi:1600},
-  {id:"c3",theme:"colleges",category:"שיווק וגיוס סטודנטים",cat_icon:"📣",icon:"🗓️",title:"הרשמה לאירועים אקדמיים",problem:"ניהול הרשמה ידנית לימים פתוחים, הרצאות וסדנאות גוזל שעות של עבודה ומועד לטעויות.",solution:"מערכת הרשמה מלאה — הנרשם מקבל אוטומטית אישור, תזכורת לפני האירוע ופרטי גישה.",features:["הרשמה להרצאות סדנאות וימים פתוחים","שליחת אישור הרשמה אוטומטי","תזכורת לפני האירוע","ניהול רשימת משתתפים"],tags:["n8n","Google Sheets","Gmail"],hrs:6,price_lo:1000,price_hi:1800},
-  {id:"c4",theme:"colleges",category:"ניהול למידה",cat_icon:"📚",icon:"📝",title:"הגשת עבודות לפי קורס",problem:"סטודנטים שולחים עבודות במייל ו-WhatsApp — המרצה לא יכול לעקוב מי הגיש ומי לא.",solution:"כל קורס מקבל קישור ייעודי להגשת עבודות. המערכת מרכזת הכל בטבלה אחת ושולחת אישור לסטודנט.",features:["קישור ייעודי לכל קורס","ריכוז כל ההגשות במקום אחד","מעקב מי הגיש ומי לא","שליחת אישור הגשה לסטודנט"],tags:["n8n","Supabase Storage","Gmail"],hrs:7,price_lo:1100,price_hi:2000},
-  {id:"c5",theme:"colleges",category:"ניהול למידה",cat_icon:"📚",icon:"⏰",title:"תזכורות לסטודנטים שלא הגישו",problem:"מרצים מבלים שעות בשליחת תזכורות ידניות לסטודנטים שלא הגישו עבודות.",solution:"המערכת בודקת לפני כל דדליין מי עדיין לא הגיש ושולחת תזכורת אישית.",features:["זיהוי סטודנטים שלא הגישו","תזכורת אוטומטית לפני הדדליין","דוח חסרים למרצה","סיכום סופי לאחר הדדליין"],tags:["n8n","Gmail","Supabase"],hrs:4,price_lo:800,price_hi:1400},
-  {id:"c6",theme:"colleges",category:"ניהול למידה",cat_icon:"📚",icon:"🤖",title:"יצירת שאלות מבחן עם AI",problem:"הכנת שאלות מבחן איכותיות לוקחת שעות — וכשיש עשרות קורסים, זה משאב יקר מאוד.",solution:"המרצה מעלה חומר לימוד והמערכת יוצרת עם AI שאלות רב-ברירה ובנק שאלות מלא.",features:["יצירת שאלות רב-ברירה מחומר הלימוד","בניית בנק שאלות מלא","יצירת מבחני תרגול","שאלות מותאמות לרמת הקורס"],tags:["Claude AI","n8n","Google Drive"],hrs:10,price_lo:1400,price_hi:2500},
-  {id:"c7",theme:"colleges",category:"מערכות AI מתקדמות",cat_icon:"🚀",icon:"💬",title:"בוט חכם לקורס",problem:"סטודנטים שואלים שאלות על חומר הקורס בלילה וסוף שבוע — כשאין מרצה זמין.",solution:"המרצה מעלה חומרי קורס. הסטודנטים שואלים שאלות בכל שעה ומקבלים תשובות מדויקות.",features:["העלאת חומרי קורס על ידי המרצה","שאלות ותשובות 24/7 לסטודנטים","תשובות מדויקות מבוססות חומר","היסטוריית שיחות לסטודנט"],tags:["Claude AI","n8n","Supabase"],hrs:15,price_lo:2000,price_hi:3500},
-  {id:"c8",theme:"colleges",category:"מערכות AI מתקדמות",cat_icon:"🚀",icon:"🎙️",title:"סיכום הרצאות מהקלטות",problem:"סטודנטים שפספסו הרצאה לא יכולים לצפות בשעה וחצי של הקלטה.",solution:"הקלטת ההרצאה עוברת תמלול אוטומטי ונוצר סיכום ברור עם נושאים מרכזיים.",features:["תמלול הרצאה אוטומטי","סיכום נושאים מרכזיים","שליחה לסטודנטים בסיום"],tags:["Whisper AI","Claude AI","n8n"],hrs:12,price_lo:1800,price_hi:3000},
-  {id:"c9",theme:"colleges",category:"מערכות AI מתקדמות",cat_icon:"🚀",icon:"🏋️",title:"AI Exam Trainer",problem:"הכנה למבחן בלי משוב אמיתי — הסטודנט לא יודע אם הוא מוכן.",solution:"מערכת אימון שיוצרת מבחני תרגול מותאמים אישית ומנתחת תשובות.",features:["מבחני תרגול מותאמים אישית","ניתוח תשובות מפורט","זיהוי נושאי קושי","מבחן ממשי עם ספירת זמן"],tags:["Claude AI","n8n","Supabase"],hrs:14,price_lo:2200,price_hi:3800},
-  {id:"o1",theme:"orgs",category:"אוטומציות שיווק",cat_icon:"📣",icon:"🎯",title:"ניהול לידים מהאתר",problem:"לידים שמגיעים מהאתר נופלים בין הכיסאות — אין מי שמטפל בהם מיד.",solution:"כל ליד שנכנס נשמר אוטומטית ב-CRM, נשלח מייל ללקוח הפוטנציאלי, וההתראה מגיעה מיד לצוות.",features:["שמירת לידים ב-CRM אוטומטית","מייל אוטומטי ללקוח חדש","התראה לצוות המכירות","דוח שבועי על כל הלידים"],tags:["n8n","CRM","Gmail"],hrs:10,price_lo:1200,price_hi:2200},
-  {id:"o2",theme:"orgs",category:"אוטומציות שיווק",cat_icon:"📣",icon:"📊",title:"מעקב ביצועי קמפיינים",problem:"נתוני ביצועים מפייסבוק, גוגל, אינסטגרם — כולם במקומות שונים. בניית דוח לוקחת שעות.",solution:"המערכת אוספת נתונים מכל פלטפורמות הפרסום ומייצרת דוח שיווק שבועי.",features:["איסוף נתונים ממקורות שונים","ריכוז במקום אחד","דוחות שיווק אוטומטיים","השוואה בין קמפיינים"],tags:["n8n","Google Sheets","Meta API"],hrs:8,price_lo:1100,price_hi:2000},
-  {id:"o3",theme:"orgs",category:"אוטומציות שיווק",cat_icon:"📣",icon:"🔥",title:"זיהוי לידים חמים",problem:"צוות המכירות מתקשר לכל הלידים בסדר הגעתם — ולא יודע מי הכי מוכן לקנות עכשיו.",solution:"המערכת עוקבת אחרי פעילות הגולשים ומסמנת לידים חמים לראש הרשימה.",features:["מעקב פעילות גולשים","ניקוד חום לפי פעילות","התראה על ליד חם","עדיפות בתור הטיפול"],tags:["n8n","Analytics","CRM"],hrs:9,price_lo:1300,price_hi:2400},
-  {id:"o4",theme:"orgs",category:"ניהול ידע ומידע",cat_icon:"🧠",icon:"📝",title:"AI Meeting Summary",problem:"אחרי כל פגישה אף אחד לא זוכר מה הוחלט ומי אמר שיעשה מה.",solution:"שולחים הקלטת פגישה ומקבלים תמלול, סיכום, ורשימת משימות עם אחראים.",features:["תמלול אוטומטי של הפגישה","סיכום נושאים ברור","זיהוי משימות ואחריות","שליחה לכל המשתתפים"],tags:["Whisper AI","Claude AI","n8n","Gmail"],hrs:12,price_lo:1600,price_hi:2800},
-  {id:"o5",theme:"orgs",category:"שירות לקוחות",cat_icon:"🎧",icon:"🔍",title:"ניתוח שיחות שירות",problem:"מנהל שירות לא יכול לקשיב ל-200 שיחות ביום — ובעיות שחוזרות לא מזוהות.",solution:"כל שיחה עוברת תמלול אוטומטי. המערכת מזהה בעיות חוזרות ומנתחת סנטימנט.",features:["תמלול שיחות אוטומטי","זיהוי בעיות חוזרות","ניתוח סנטימנט","דוחות שבועיים למנהלים"],tags:["Whisper AI","Claude AI","n8n"],hrs:15,price_lo:2000,price_hi:3500},
-  {id:"o6",theme:"orgs",category:"שירות לקוחות",cat_icon:"🎧",icon:"😠",title:"זיהוי לקוחות לא מרוצים",problem:"לקוחות לא מרוצים לא תמיד מדברים — הם פשוט עוזבים.",solution:"המערכת מנתחת תוכן פניות ומזהה אותות של אי-שביעות רצון. נשלחת התראה לנציג.",features:["ניתוח תוכן פניות בזמן אמת","ניקוד שביעות רצון","התראה על לקוח בסיכון","דוח חודשי על מגמות"],tags:["Claude AI","n8n","Supabase"],hrs:11,price_lo:1500,price_hi:2600},
-  {id:"o7",theme:"orgs",category:"ניהול ותפעול",cat_icon:"⚙️",icon:"🗂️",title:"ניהול פניות עובדים",problem:"בקשות ציוד, חופשה, תמיכה טכנית — כולן מגיעות בווטסאפ ומייל. אין מעקב.",solution:"פורטל פנימי אחד לכל הבקשות עם ניתוב אוטומטי למחלקה הנכונה.",features:["פורטל פנימי מרכזי","ניתוב אוטומטי למחלקה הנכונה","מעקב סטטוס לעובד","דוחות למנהלים"],tags:["n8n","Supabase","Gmail"],hrs:8,price_lo:1200,price_hi:2000}
-];
-
-const CAT_SUBS={'שיווק וגיוס סטודנטים':'גיוס, לידים ותקשורת אוטומטית','ניהול למידה':'הגשות, תזכורות ושאלות מבחן','מערכות AI מתקדמות':'כלי AI שמשנים את חוויית הלמידה','אוטומציות שיווק':'לידים, קמפיינים ומכירות','ניהול ידע ומידע':'פגישות, החלטות ומידע מאורגן','שירות לקוחות':'שיחות, פניות ולקוחות בסיכון','ניהול ותפעול':'Back-Office שרץ לבד'};
-
-/* PLATFORMS */
-const PLATFORMS=[
-  {n:"Gmail",ico:"📧",cat:"comm",bg:"#EA4335",cat2:"תקשורת"},
-  {n:"Google Sheets",ico:"📊",cat:"data",bg:"#34A853",cat2:"נתונים"},
-  {n:"Google Drive",ico:"💾",cat:"data",bg:"#4285F4",cat2:"נתונים"},
-  {n:"Google Calendar",ico:"📅",cat:"comm",bg:"#4285F4",cat2:"תקשורת"},
-  {n:"Google Forms",ico:"📋",cat:"edu",bg:"#7C4DFF",cat2:"חינוך"},
-  {n:"Google Meet",ico:"🎥",cat:"comm",bg:"#00897B",cat2:"תקשורת"},
-  {n:"YouTube",ico:"▶️",cat:"edu",bg:"#FF0000",cat2:"חינוך"},
-  {n:"Slack",ico:"💬",cat:"comm",bg:"#4A154B",cat2:"תקשורת"},
-  {n:"Microsoft Teams",ico:"🫂",cat:"comm",bg:"#5059C9",cat2:"תקשורת"},
-  {n:"WhatsApp",ico:"📱",cat:"comm",bg:"#25D366",cat2:"תקשורת"},
-  {n:"Zoom",ico:"🎦",cat:"comm",bg:"#2D8CFF",cat2:"תקשורת"},
-  {n:"Moodle",ico:"🎓",cat:"edu",bg:"#F98012",cat2:"חינוך"},
-  {n:"Wix",ico:"🌐",cat:"biz",bg:"#FBCC40",cat2:"עסקים"},
-  {n:"WordPress",ico:"🌍",cat:"biz",bg:"#21759B",cat2:"עסקים"},
-  {n:"Monday.com",ico:"📌",cat:"biz",bg:"#FF3D57",cat2:"עסקים"},
-  {n:"Notion",ico:"📒",cat:"biz",bg:"#FFFFFF",cat2:"עסקים"},
-  {n:"Trello",ico:"📋",cat:"biz",bg:"#0052CC",cat2:"עסקים"},
-  {n:"HubSpot",ico:"🧲",cat:"biz",bg:"#FF7A59",cat2:"עסקים"},
-  {n:"Salesforce",ico:"☁️",cat:"biz",bg:"#00A1E0",cat2:"עסקים"},
-  {n:"Airtable",ico:"🗃️",cat:"data",bg:"#18BFFF",cat2:"נתונים"},
-  {n:"Typeform",ico:"📝",cat:"biz",bg:"#262627",cat2:"עסקים"},
-  {n:"Tally",ico:"📋",cat:"biz",bg:"#4F46E5",cat2:"עסקים"},
-  {n:"Facebook Ads",ico:"📣",cat:"biz",bg:"#1877F2",cat2:"עסקים"},
-  {n:"LinkedIn",ico:"💼",cat:"biz",bg:"#0A66C2",cat2:"עסקים"},
-  {n:"Supabase",ico:"🗄️",cat:"data",bg:"#3ECF8E",cat2:"נתונים"},
-  {n:"n8n",ico:"⚙️",cat:"data",bg:"#EA4B71",cat2:"נתונים"},
-  {n:"Claude AI",ico:"🤖",cat:"ai",bg:"#CC785C",cat2:"AI"},
-  {n:"ChatGPT",ico:"💭",cat:"ai",bg:"#74AA9C",cat2:"AI"},
-  {n:"Whisper AI",ico:"🎙️",cat:"ai",bg:"#412991",cat2:"AI"},
-  {n:"Gemini",ico:"✨",cat:"ai",bg:"#4285F4",cat2:"AI"},
-  {n:"Twilio",ico:"📞",cat:"comm",bg:"#F22F46",cat2:"תקשורת"},
-  {n:"Mailchimp",ico:"🐒",cat:"comm",bg:"#FFE01B",cat2:"תקשורת"},
-  {n:"Jira",ico:"🔷",cat:"biz",bg:"#0052CC",cat2:"עסקים"},
-  {n:"Zapier",ico:"⚡",cat:"data",bg:"#FF4A00",cat2:"נתונים"},
-  {n:"Intercom",ico:"💬",cat:"biz",bg:"#006EFF",cat2:"עסקים"},
-];
+const T={
+  he:{
+    lang_btn:'EN',
+    kicker:'n8n · Claude AI · Supabase · 40+ אינטגרציות',
+    h1a:'הטכנולוגיה עובדת —',h1b:'אתם מתמקדים בצמיחה',
+    hero_sub:'אנחנו בונים אוטומציות חכמות שחוסכות עשרות שעות בחודש.\nבחרו את הארגון שלכם כדי לראות פתרונות רלוונטיים.',
+    nav_co:'🏢 חברות',nav_ed:'🎓 מכללות',nav_idea:'💡 רעיון משלכם',nav_contact:'✉️ השאירו פרטים',
+    btn_co:'🏢 לחברות וארגונים',btn_ed:'🎓 למכללות ואוניברסיטאות',btn_all:'הצג הכל',
+    wiz_btn:'בנו את חבילת האוטומציה שלכם',wiz_sub:'בנו את חבילת האוטומציה שלכם',
+    s1:'חיסכון בזמן על משימות חוזרות',s2:'המערכת עובדת גם כשהצוות ישן',s3:'טעויות אנוש בתהליכים אוטומטיים',s4:'יותר לידים שמקבלים מענה בזמן',
+    auto_tag:'הפתרונות שלנו',auto_title:'כל האוטומציות שלנו',auto_sub:'לחצו על קטגוריה לפרטים — או השתמשו במחשבון לבניית חבילה',
+    f_all:'הכל',f_co:'🏢 חברות',f_ed:'🎓 מכללות',
+    plat_tag:'חיבורים',plat_title:'מחברים כל פלטפורמה שתבחרו',plat_sub:'אנחנו עובדים עם 40+ פלטפורמות ויכולים לחבר כמעט כל שניים ביניהן',plat_label:'שמות הפלטפורמות מתחלפים אוטומטית',
+    cust_h:'יש לכם רעיון משלכם?',cust_p:'לא מצאתם מה שחיפשתם? ספרו לנו אילו פלטפורמות משתמשים, אילו תהליכים חוזרים — ואנחנו נחשוב יחד.',
+    ct1:'חיבור בין פלטפורמות',ct2:'תהליך ייחודי לעסק',ct3:'אינטגרציה עם מערכת קיימת',ct4:'דוחות אוטומטיים',ct5:'ניתוב חכם של מידע',cust_btn:'ספרו לנו על הרעיון',
+    cta_h:'מוכנים להתחיל?',cta_p:'השאירו פרטים ונחזור אליכם תוך יום עסקים',cta_btn:'השאירו פרטים ונחזור אליכם',
+    wz1h:'אתם מי?',wz1p:'בחרו את סוג הארגון',tc_co:'חברה / ארגון',tc_cod:'עסק, חברה, ארגון עם תהליכים עסקיים',tc_ed:'מכללה / אוניברסיטה',tc_edd:'מוסד אקדמי עם סטודנטים ומרצים',
+    wz2h:'אילו אוטומציות מעניינות?',wz2p:'לחצו על כל מה שרלוונטי',picked:'נבחרו:',to_results:'הצג תוצאות →',back:'חזרה',
+    wz3h:'הערכת ערך — החבילה שלכם',price_lbl:'טווח השקעה משוער',price_note:'* מחיר סופי לפי התאמות ספציפיות | ייעוץ ראשוני ללא עלות',
+    sel_h:'קטגוריות שבחרתם:',ch1h:'⏱️ שעות חסכון/חודש',ch1p:'לפני ואחרי',ch2h:'📈 ROI ל-6 חודשים',ch2p:'תשואה על ההשקעה',
+    to_contact:'השאירו פרטים ←',wz4h:'כמעט סיימנו',wz4p:'השאירו פרטים ונחזור תוך יום עסקים',
+    ws1:'סוג ארגון',ws2:'בחירת אוטומציות',ws3:'הערכת ערך',ws4:'פרטים',
+    lbl_name:'שם מלא *',lbl_email:'אימייל *',lbl_phone:'טלפון',lbl_org:'שם הארגון',lbl_notes:'הערות',lbl_type:'סוג ארגון',lbl_msg:'ספרו לנו',
+    ph_msg:'אילו תהליכים חוזרים גוזלים הכי הרבה זמן?',sub_btn:'🚀 שלחו — נחזור אליכם בהקדם',
+    ok_h:'תודה! קיבלנו',ok_p:'נחזור אליכם תוך יום עסקים.',ok_close:'סיום',
+    co_title:'השאירו פרטים',co_sub:'נחזור אליכם תוך יום עסקים',
+    cu_title:'ספרו לנו על הרעיון',cu_sub:'נחשוב יחד איך לאוטומט',cu_lbl1:'שם ואימייל *',cu_lbl2:'פלטפורמות שמשתמשים בהן',cu_lbl3:'תאור התהליך',cu_ph:'לדוג׳: כל שבוע מוציאים דוח ידני...',cu_lbl4:'שעות בשבוע',cu_btn:'💡 שלחו — נחקור',
+    cu_ok_h:'קיבלנו! אנחנו חוקרים',cu_ok_p:'נחזור תוך 2 ימי עסקים.',
+  },
+  en:{
+    lang_btn:'עב׳',
+    kicker:'n8n · Claude AI · Supabase · 40+ integrations',
+    h1a:'Technology works —',h1b:'you focus on growth',
+    hero_sub:'We build smart automations that save dozens of hours per month.\nChoose your organization type to see relevant solutions.',
+    nav_co:'🏢 Companies',nav_ed:'🎓 Colleges',nav_idea:'💡 Your idea',nav_contact:'✉️ Contact us',
+    btn_co:'🏢 For Companies & Organizations',btn_ed:'🎓 For Colleges & Universities',btn_all:'Show All',
+    wiz_btn:'Build your automation package',wiz_sub:'Build your automation package',
+    s1:'Time saved on repetitive tasks',s2:'System runs even when your team sleeps',s3:'Human errors in automated processes',s4:'More leads getting instant response',
+    auto_tag:'Our Solutions',auto_title:'All Our Automations',auto_sub:'Click a category for details — or use the calculator to build a package',
+    f_all:'All',f_co:'🏢 Companies',f_ed:'🎓 Colleges',
+    plat_tag:'Integrations',plat_title:'Connect any platform you choose',plat_sub:'We work with 40+ platforms and can connect almost any two of them',plat_label:'Platform names cycle automatically',
+    cust_h:'Have your own idea?',cust_p:"Didn't find what you were looking for? Tell us which platforms you use and which processes repeat — we'll figure out how to automate them.",
+    ct1:'Platform connections',ct2:'Business-specific workflow',ct3:'Integration with existing system',ct4:'Automated reports',ct5:'Smart data routing',cust_btn:'Tell us your idea',
+    cta_h:'Ready to start?',cta_p:'Leave your details and we\'ll get back to you within one business day',cta_btn:'Leave your details',
+    wz1h:'Who are you?',wz1p:'Choose your organization type',tc_co:'Company / Organization',tc_cod:'Business, company or organization with business processes',tc_ed:'College / University',tc_edd:'Academic institution with students and lecturers',
+    wz2h:'Which automations interest you?',wz2p:'Click anything that seems relevant — pick as many as you like',picked:'Selected:',to_results:'Show results →',back:'Back',
+    wz3h:'Value estimate — your package',price_lbl:'Estimated investment range',price_note:'* Final price depends on specific customizations | First consultation free',
+    sel_h:'Categories you selected:',ch1h:'⏱️ Hours saved per month',ch1p:'Before vs after',ch2h:'📈 ROI over 6 months',ch2p:'Return on investment',
+    to_contact:'Leave details →',wz4h:'Almost done',wz4p:'Leave your details and we\'ll get back within one business day',
+    ws1:'Org type',ws2:'Choose automations',ws3:'Value estimate',ws4:'Details',
+    lbl_name:'Full name *',lbl_email:'Email *',lbl_phone:'Phone',lbl_org:'Organization name',lbl_notes:'Notes',lbl_type:'Organization type',lbl_msg:'Tell us more',
+    ph_msg:'Which recurring processes take the most of your time?',sub_btn:'🚀 Send — we\'ll get back to you',
+    ok_h:'Thank you!',ok_p:'We\'ll get back to you within one business day.',ok_close:'Done',
+    co_title:'Leave your details',co_sub:'We\'ll get back within one business day',
+    cu_title:'Tell us about your idea',cu_sub:'We\'ll figure out how to automate it',cu_lbl1:'Name & Email *',cu_lbl2:'Platforms you use',cu_lbl3:'Describe the process',cu_ph:'E.g.: Every week we manually create a report and email it...',cu_lbl4:'Hours per week',cu_btn:'💡 Send — we\'ll explore',
+    cu_ok_h:'Got it! We\'re exploring',cu_ok_p:'We\'ll get back within 2 business days.',
+  }
+};
 
 /* ══════════════════════════════════════════════
-   CANVAS BACKGROUND
+   AUTOMATION DATA
+══════════════════════════════════════════════ */
+const CATS={
+  companies:[
+    {id:'mktg',icon:'📣',he:'אוטומציית שיווק',en:'Marketing Automation',
+     ihe:['ניהול קמפיינים','הפצת תוכן','סגמנטציה','ריטרגטינג','מדיה חברתית'],
+     ien:['Campaign management','Content distribution','Audience segmentation','Retargeting','Social media'],
+     hrs:10,plo:1400,phi:2800},
+    {id:'leads',icon:'🎯',he:'יצירת וניהול לידים',en:'Lead Generation & Management',
+     ihe:['לכידת לידים','העשרת לידים','ניקוד לידים','ניתוב לידים','טיפוח לידים'],
+     ien:['Lead capture','Lead enrichment','Lead scoring','Lead routing','Lead nurturing'],
+     hrs:12,plo:1600,phi:3000},
+    {id:'sales',icon:'💰',he:'אוטומציית מכירות',en:'Sales Automation',
+     ihe:['ניהול פייפליין','מעקב עסקאות','Follow-up אוטומטי','יצירת הצעות','תזמון שיחות'],
+     ien:['Pipeline management','Deal tracking','Follow-up automation','Proposal generation','Call scheduling'],
+     hrs:11,plo:1500,phi:2800},
+    {id:'comm',icon:'📧',he:'אוטומציית תקשורת',en:'Communication Automation',
+     ihe:['מיילים אוטומטיים','SMS אוטומטי','WhatsApp אוטומטי','מערכת התראות','תקשורת רב-ערוצית'],
+     ien:['Email automation','SMS automation','WhatsApp automation','Notification systems','Multi-channel'],
+     hrs:8,plo:1100,phi:2200},
+    {id:'ops',icon:'🏢',he:'תפעול ותהליכים פנימיים',en:'Operations & Internal Processes',
+     ihe:['ניהול משימות','אוטומציית תהליכים','תהליכי אישור','בקשות פנימיות','ניהול משאבים'],
+     ien:['Task management','Workflow automation','Approval processes','Internal requests','Resource management'],
+     hrs:9,plo:1300,phi:2500},
+    {id:'hr',icon:'👥',he:'HR וניהול עובדים',en:'HR & Employee Management',
+     ihe:['גיוס עובדים','קליטת עובדים','הדרכות','מעקב ביצועים','תקשורת פנימית'],
+     ien:['Recruitment workflows','Employee onboarding','Training automation','Performance tracking','Internal communication'],
+     hrs:8,plo:1200,phi:2400},
+    {id:'analytics',icon:'📊',he:'אנליטיקה ודוחות',en:'Analytics & Reporting',
+     ihe:['איסוף נתונים','דשבורד אוטומטי','מעקב ביצועים','ניטור KPI','דוחות אוטומטיים'],
+     ien:['Data aggregation','Dashboard automation','Performance tracking','KPI monitoring','Automated reporting'],
+     hrs:7,plo:1100,phi:2200},
+    {id:'ai',icon:'🧠',he:'AI ומערכות חכמות',en:'AI & Smart Systems',
+     ihe:['עוזרי AI','ניתוח חזוי','מערכות המלצה','יצירת תוכן','ניתוח התנהגות'],
+     ien:['AI assistants','Predictive analytics','Recommendation systems','Content generation','Behavior analysis'],
+     hrs:14,plo:2000,phi:4000},
+    {id:'support',icon:'📞',he:'תמיכת לקוחות',en:'Customer Support & Service',
+     ihe:['מערכת כרטיסים','צ\'אטבוטים','ניתוח שיחות','איסוף פידבק','ניתוח סנטימנט'],
+     ien:['Ticketing systems','Chatbots','Call analysis','Feedback collection','Sentiment analysis'],
+     hrs:12,plo:1600,phi:3200},
+    {id:'fin',icon:'🧾',he:'פיננסים וחיוב',en:'Finance & Billing',
+     ihe:['חשבוניות אוטומטיות','מעקב תשלומים','ניהול מנויים','דוחות כספיים','מעקב הוצאות'],
+     ien:['Invoice automation','Payment tracking','Subscription management','Financial reporting','Expense tracking'],
+     hrs:8,plo:1200,phi:2400},
+    {id:'integ',icon:'🔗',he:'אינטגרציות ו-API',en:'Integrations & API',
+     ihe:['אינטגרציות חיצוניות','סנכרון נתונים','Webhooks','תהליכים בין-פלטפורמות'],
+     ien:['Third-party integrations','Data syncing','Webhooks','Cross-platform workflows'],
+     hrs:6,plo:900,phi:1800},
+    {id:'sec',icon:'🔐',he:'אבטחה וציות',en:'Security & Compliance',
+     ihe:['בקרת גישה','הגנת מידע','לוגי ביקורת','ציות לתקנות'],
+     ien:['Access control','Data protection workflows','Audit logs','Compliance tracking'],
+     hrs:5,plo:800,phi:1600},
+    {id:'web',icon:'🌐',he:'אתר ופאנל מכירות',en:'Website & Funnel Automation',
+     ihe:['דפי נחיתה','מעקב המרות','בדיקות A/B','אופטימיזציית פאנל'],
+     ien:['Landing pages','Conversion tracking','A/B testing','Funnel optimization'],
+     hrs:7,plo:1000,phi:2000},
+  ],
+  colleges:[
+    {id:'recruit',icon:'📣',he:'גיוס סטודנטים',en:'Student Recruitment',
+     ihe:['אוטומציית קבלה','הרשמה לאירועים','ניהול פניות','מעקב קמפיינים'],
+     ien:['Admissions automation','Event registration','Inquiry management','Campaign tracking'],
+     hrs:10,plo:1400,phi:2600},
+    {id:'lms',icon:'📚',he:'ניהול למידה',en:'Learning Management',
+     ihe:['ניהול קורסים','מעקב הגשות','מערכות מבחן','מעקב התקדמות'],
+     ien:['Course management','Assignment tracking','Exam systems','Progress tracking'],
+     hrs:9,plo:1300,phi:2400},
+    {id:'admin',icon:'🏫',he:'ניהול אקדמי',en:'Academic Administration',
+     ihe:['לוחות זמנים','בקשות סטודנטים','תיאום סגל','ניהול מסמכים'],
+     ien:['Scheduling','Student requests','Staff coordination','Document management'],
+     hrs:8,plo:1100,phi:2200},
+    {id:'exp',icon:'🎯',he:'חוויית סטודנט',en:'Student Experience',
+     ihe:['מעורבות סטודנטים','כלי לימוד','מערכות שיתוף פעולה','למידה מותאמת אישית'],
+     ien:['Student engagement','Study tools','Collaboration systems','Personalized learning'],
+     hrs:10,plo:1400,phi:2800},
+    {id:'aied',icon:'🤖',he:'AI לחינוך',en:'AI for Education',
+     ihe:['מדריכי AI','הכנה למבחנים','סיכום הרצאות','עוזרי ידע'],
+     ien:['AI tutors','Exam preparation systems','Lecture summarization','Knowledge assistants'],
+     hrs:16,plo:2200,phi:4200},
+    {id:'ecomm',icon:'📧',he:'תקשורת אקדמית',en:'Academic Communication',
+     ihe:['מיילים אוטומטיים למועמדים','תזכורות לסטודנטים','עדכוני קורסים','הודעות ממוסד'],
+     ien:['Automated emails to applicants','Student reminders','Course updates','Institutional announcements'],
+     hrs:7,plo:1000,phi:2000},
+    {id:'eanalytics',icon:'📊',he:'דוחות ואנליטיקה',en:'Analytics & Reporting',
+     ihe:['דוחות מגמות','מעקב נוכחות','ניטור ביצועי קורסים','דוחות לפקולטות'],
+     ien:['Trend reports','Attendance tracking','Course performance monitoring','Faculty reports'],
+     hrs:6,plo:900,phi:1800},
+    {id:'einteg',icon:'🔗',he:'אינטגרציות חינוכיות',en:'Educational Integrations',
+     ihe:['חיבור Moodle + Gmail','אינטגרציה עם מערכת רישום','חיבור לפלטפורמות זום','סנכרון נתוני סטודנטים'],
+     ien:['Moodle + Gmail connection','Registration system integration','Zoom platform connection','Student data sync'],
+     hrs:8,plo:1100,phi:2200},
+  ]
+};
+
+const PLATFORMS=['Gmail','Google Sheets','Google Drive','Google Meet','Google Forms','YouTube','Slack','Microsoft Teams','WhatsApp','Zoom','Moodle','Monday.com','Notion','Trello','HubSpot','Salesforce','Airtable','Typeform','Tally','Facebook Ads','LinkedIn','Supabase','n8n','Claude AI','ChatGPT','Whisper AI','Twilio','Mailchimp','Jira','Zapier','Intercom','ActiveCampaign','Stripe','Zendesk','WooCommerce','Shopify','WordPress','Wix','Microsoft 365','Dropbox'];
+
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+let lang='he', mode='all', wizType='companies', wizPicked=[], wizStep=1;
+let wch1=null, wch2=null;
+
+/* ══════════════════════════════════════════════
+   SPLASH
+══════════════════════════════════════════════ */
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    const s=document.getElementById('splash');
+    s.classList.add('done');
+    setTimeout(()=>s.style.display='none',1000);
+  },2400);
+});
+
+/* ══════════════════════════════════════════════
+   CURSOR TRAIL
+══════════════════════════════════════════════ */
+const tc=document.getElementById('trail-c');
+const tctx=tc.getContext('2d');
+let trail_pts=[];
+tc.width=innerWidth;tc.height=innerHeight;
+window.addEventListener('resize',()=>{tc.width=innerWidth;tc.height=innerHeight;});
+window.addEventListener('mousemove',e=>{
+  trail_pts.push({x:e.clientX,y:e.clientY,t:Date.now(),r:3.5});
+  // small dot cursor
+  tc.style.cursor='none';
+});
+(function drawTrail(){
+  tctx.clearRect(0,0,tc.width,tc.height);
+  const now=Date.now();
+  trail_pts=trail_pts.filter(p=>now-p.t<700);
+  trail_pts.forEach(p=>{
+    const age=(now-p.t)/700;
+    const r=p.r*(1-age);
+    tctx.beginPath();
+    tctx.arc(p.x,p.y,Math.max(r,0),0,Math.PI*2);
+    tctx.fillStyle=`rgba(118,164,249,${(1-age)*0.6})`;
+    tctx.fill();
+  });
+  // dot cursor
+  if(trail_pts.length>0){
+    const last=trail_pts[trail_pts.length-1];
+    tctx.beginPath();tctx.arc(last.x,last.y,4,0,Math.PI*2);
+    tctx.fillStyle='rgba(40,112,246,0.9)';tctx.fill();
+  }
+  requestAnimationFrame(drawTrail);
+})();
+
+/* ══════════════════════════════════════════════
+   PLATFORMS CANVAS (hero)
 ══════════════════════════════════════════════ */
 (function(){
-  const c=document.getElementById('bg'),ctx=c.getContext('2d');
-  let w,h,pts=[];
-  function resize(){w=c.width=innerWidth;h=c.height=innerHeight;}
-  resize();addEventListener('resize',resize);
-  for(let i=0;i<80;i++) pts.push({x:Math.random()*9999,y:Math.random()*9999,dx:(Math.random()-.5)*.28,dy:(Math.random()-.5)*.28,r:Math.random()*1.6+.4,a:Math.random()*.55+.18,col:Math.random()>.55?'79,142,247':'6,182,212'});
+  const c=document.getElementById('plat-c');
+  if(!c)return;
+  const ctx=c.getContext('2d');
+  let W=0,H=0,orbs=[];
+  function resize(){
+    W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize',resize);
+  const pool=[...PLATFORMS];
+  let pi=0;
+  function spawn(){
+    const p=pool[pi%pool.length]; pi++;
+    return{
+      text:p, x:Math.random()*W, y:Math.random()*H,
+      dx:(Math.random()-.5)*.22, dy:(Math.random()-.5)*.18,
+      alpha:0, maxA:Math.random()*.45+.15,
+      life:0, lifeMax:Math.random()*280+180,
+      fs:Math.floor(Math.random()*6)+11,
+    };
+  }
+  for(let i=0;i<18;i++)orbs.push(spawn());
   (function draw(){
-    ctx.clearRect(0,0,w,h);
-    ctx.fillStyle='rgba(79,142,247,0.055)';
-    for(let x=0;x<w;x+=58)for(let y=0;y<h;y+=58){ctx.beginPath();ctx.arc(x,y,1,0,Math.PI*2);ctx.fill();}
-    pts.forEach((p,i)=>{
-      p.x+=p.dx;p.y+=p.dy;
-      if(p.x<0||p.x>w)p.dx*=-1;if(p.y<0||p.y>h)p.dy*=-1;
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(${p.col},${p.a})`;ctx.fill();
-      for(let j=i+1;j<pts.length;j++){const q=pts[j],d=Math.hypot(p.x-q.x,p.y-q.y);if(d<120){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.strokeStyle=`rgba(79,142,247,${.07*(1-d/120)})`;ctx.lineWidth=.5;ctx.stroke();}}
+    ctx.clearRect(0,0,W,H);
+    orbs.forEach((o,i)=>{
+      o.life++;
+      const half=o.lifeMax/2;
+      o.alpha=o.life<half?o.maxA*(o.life/half):o.maxA*(1-(o.life-half)/half);
+      o.x+=o.dx; o.y+=o.dy;
+      if(o.x<0)o.x=W; if(o.x>W)o.x=0;
+      if(o.y<0)o.y=H; if(o.y>H)o.y=0;
+      ctx.font=`600 ${o.fs}px Heebo`;
+      ctx.fillStyle=`rgba(118,164,249,${o.alpha})`;
+      ctx.fillText(o.text,o.x,o.y);
+      if(o.life>=o.lifeMax)orbs[i]=spawn();
     });
     requestAnimationFrame(draw);
   })();
 })();
 
 /* ══════════════════════════════════════════════
-   CURSOR
+   PLATFORMS MAIN CANVAS (section)
 ══════════════════════════════════════════════ */
-const cur=document.getElementById('cur'),curR=document.getElementById('cur-r'),mg=document.getElementById('mglow');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';mg.style.left=mx+'px';mg.style.top=my+'px';});
-(function ar(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;curR.style.left=rx+'px';curR.style.top=ry+'px';requestAnimationFrame(ar);})();
+(function(){
+  const c=document.getElementById('plat-main-c');
+  if(!c)return;
+  const ctx=c.getContext('2d');
+  let W=0,H=0,nodes=[];
+  function resize(){W=c.width=c.parentElement.offsetWidth;H=c.height=c.parentElement.offsetHeight;}
+  resize();window.addEventListener('resize',()=>{resize();buildNodes();});
+  let mx=W/2,my=H/2;
+  c.parentElement.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top;});
+  function buildNodes(){
+    nodes=PLATFORMS.map((p,i)=>{
+      const angle=((i/PLATFORMS.length)*Math.PI*2)+Math.random()*.4;
+      const rad=Math.random()*Math.min(W,H)*.36+60;
+      return{
+        text:p,
+        bx:W/2+Math.cos(angle)*rad,
+        by:H/2+Math.sin(angle)*rad,
+        x:0,y:0,
+        vx:0,vy:0,
+        fs:Math.floor(Math.random()*5)+11,
+        col:`rgba(${Math.random()>.5?'118,164,249':'40,112,246'},`,
+      };
+    });
+    nodes.forEach(n=>{n.x=n.bx;n.y=n.by;});
+  }
+  buildNodes();
+  (function draw(){
+    ctx.clearRect(0,0,W,H);
+    // lines between nearby nodes
+    nodes.forEach((a,i)=>{
+      nodes.slice(i+1).forEach(b=>{
+        const d=Math.hypot(a.x-b.x,a.y-b.y);
+        if(d<120){
+          ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+          ctx.strokeStyle=`rgba(40,112,246,${.12*(1-d/120)})`;ctx.lineWidth=.8;ctx.stroke();
+        }
+      });
+    });
+    nodes.forEach(n=>{
+      // pull toward base pos + repel from mouse
+      const dx=mx-n.x,dy=my-n.y,dist=Math.max(Math.hypot(dx,dy),1);
+      const rep=dist<140?-(140-dist)/140*1.2:0;
+      n.vx+=(n.bx-n.x)*.018+(rep*dx/dist);
+      n.vy+=(n.by-n.y)*.018+(rep*dy/dist);
+      n.vx*=.88;n.vy*=.88;
+      n.x+=n.vx;n.y+=n.vy;
+      const mouseDist=Math.hypot(mx-n.x,my-n.y);
+      const a=mouseDist<100?.65:.32;
+      ctx.font=`600 ${n.fs}px Heebo`;
+      ctx.fillStyle=n.col+a+')';
+      ctx.fillText(n.text,n.x,n.y);
+    });
+    requestAnimationFrame(draw);
+  })();
+})();
 
 /* ══════════════════════════════════════════════
-   SCROLL / REVEAL
+   SCROLL / REVEAL / HEADER
 ══════════════════════════════════════════════ */
 const hdr=document.getElementById('hdr');
 window.addEventListener('scroll',()=>hdr.classList.toggle('scrolled',scrollY>40));
-const ro=new IntersectionObserver(es=>{es.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*55);ro.unobserve(e.target);}});},{threshold:.07});
+const ro=new IntersectionObserver(es=>es.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*60);ro.unobserve(e.target);}}),{threshold:.07});
 document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
 function scrollTo(sel){document.querySelector(sel)?.scrollIntoView({behavior:'smooth'});}
 
 /* ══════════════════════════════════════════════
-   COUNTERS
+   COUNTER ANIMATION
 ══════════════════════════════════════════════ */
 const co=new IntersectionObserver(es=>{es.forEach(e=>{if(!e.isIntersecting)return;e.target.querySelectorAll('[data-target]').forEach(el=>{const t=+el.dataset.target,pre=el.dataset.pre||'',suf=el.dataset.suf||'';let c=0;const iv=setInterval(()=>{c=Math.min(c+t/90,t);el.textContent=pre+Math.round(c)+suf;if(c>=t)clearInterval(iv);},16);});co.unobserve(e.target);});},{threshold:.3});
-document.querySelectorAll('.stats-section').forEach(el=>co.observe(el));
+document.querySelectorAll('#s-stats').forEach(el=>co.observe(el));
 
 /* ══════════════════════════════════════════════
-   PLATFORMS
+   LANGUAGE
 ══════════════════════════════════════════════ */
-function buildPlatforms(){
-  const cats=['all','edu','biz','comm','data','ai'];
-  cats.forEach(cat=>{
-    const el=document.getElementById('plat-'+cat);
-    if(!el)return;
-    const list=cat==='all'?PLATFORMS:PLATFORMS.filter(p=>p.cat===cat);
-    el.innerHTML=list.map(p=>`
-      <div class="plat-card">
-        <span class="pico">${p.ico}</span>
-        <div class="pname">${p.n}</div>
-        <div class="pcat">${p.cat2}</div>
-      </div>`).join('');
+function toggleLang(){lang=lang==='he'?'en':'he';applyLang();}
+function applyLang(){
+  const root=document.getElementById('root');
+  root.lang=lang;root.dir=lang==='he'?'rtl':'ltr';
+  document.getElementById('lang-btn').textContent=T[lang].lang_btn;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.dataset.i18n;
+    if(T[lang][key]!==undefined)el.textContent=T[lang][key];
   });
-}
-function showPlat(cat,btn){
-  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.plat-panel').forEach(p=>{p.classList.remove('active');p.style.display='none';});
-  const el=document.getElementById('plat-'+cat);
-  if(el){el.classList.add('active');el.style.display='grid';}
-}
-buildPlatforms();
-// init display
-document.querySelectorAll('.plat-panel').forEach(p=>p.style.display='none');
-document.getElementById('plat-all').style.display='grid';
-
-/* ══════════════════════════════════════════════
-   RENDER BROWSE CARDS
-══════════════════════════════════════════════ */
-function renderBrowse(){
-  ['colleges','orgs'].forEach(theme=>{
-    const items=AUTOS.filter(a=>a.theme===theme);
-    const cats={};
-    items.forEach(a=>{if(!cats[a.category])cats[a.category]={icon:a.cat_icon,items:[]};cats[a.category].items.push(a);});
-    document.getElementById('cats-'+theme).innerHTML=Object.entries(cats).map(([cat,d])=>`
-      <div class="cat-wrap reveal">
-        <div class="cat-hdr">
-          <div class="cat-ico-w">${d.icon}</div>
-          <div><div class="cat-n">${cat}</div><div class="cat-s">${CAT_SUBS[cat]||''}</div></div>
-          <div class="cat-pill">${d.items.length} אוטומציות</div>
-        </div>
-        <div class="cards-g">
-          ${d.items.map(a=>`<div class="crd" onclick='openInfo(${JSON.stringify(a).replace(/'/g,"&#39;")})'>
-            <div class="crd-shine"></div>
-            <div class="crd-ico">${a.icon}</div>
-            <div class="crd-n">${a.title}</div>
-            <div class="crd-arr">לפרטים ←</div>
-          </div>`).join('')}
-        </div>
-      </div>`).join('');
-    document.querySelectorAll('.cat-wrap.reveal').forEach(el=>ro.observe(el));
-  });
-}
-renderBrowse();
-
-function switchTab(t){
-  document.querySelectorAll('.tbt').forEach(b=>b.classList.remove('active'));
-  document.querySelector(`[data-tab="${t}"]`).classList.add('active');
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('panel-'+t).classList.add('active');
+  renderAuto();
 }
 
 /* ══════════════════════════════════════════════
-   INFO MODAL
+   MODE (hero buttons)
 ══════════════════════════════════════════════ */
-function openInfo(d){
-  document.getElementById('mIco').textContent=d.icon;
-  document.getElementById('mTitle').textContent=d.title;
-  document.getElementById('mCat').textContent='📁 '+d.category;
-  const feats=(d.features||[]).map(f=>`<div class="fi"><div class="fd"></div>${f}</div>`).join('');
-  const tags=(d.tags||[]).map(t=>`<span class="tg">${t}</span>`).join('');
-  document.getElementById('mBody').innerHTML=`
-    <div class="mblk"><div class="pbox">${d.problem||''}</div></div>
-    <div class="mblk"><div class="sbox">${d.solution||''}</div></div>
-    ${feats?`<div class="mblk"><div class="mlbl">מה כלול</div><div class="fl">${feats}</div></div>`:''}
-    ${tags?`<div class="mblk"><div class="mlbl">טכנולוגיות</div><div class="tr">${tags}</div></div>`:''}
-    <div class="mct"><button class="bm" onclick="closeInfo();openWizard()">🚀 הוסיפו לחבילה שלכם</button></div>`;
-  document.getElementById('info-overlay').classList.add('show');
-  document.body.style.overflow='hidden';
-}
-function closeInfo(){document.getElementById('info-overlay').classList.remove('show');document.body.style.overflow='';}
-function closeInfoOut(e){if(e.target===document.getElementById('info-overlay'))closeInfo();}
-
-/* ══════════════════════════════════════════════
-   CONTACT MODAL
-══════════════════════════════════════════════ */
-function openContact(){document.getElementById('contact-overlay').classList.add('show');document.body.style.overflow='hidden';}
-function closeContact(){document.getElementById('contact-overlay').classList.remove('show');document.body.style.overflow='';}
-function closeContactOut(e){if(e.target===document.getElementById('contact-overlay'))closeContact();}
-function submitContact(){
-  const n=document.getElementById('cf-name').value.trim(),em=document.getElementById('cf-email').value.trim();
-  if(!n||!em){alert('אנא מלאו שם ואימייל');return;}
-  document.getElementById('contact-form-wrap').style.display='none';
-  document.getElementById('contact-success').style.display='block';
+const BG={all:'#000F61',companies:'#031A79',colleges:'#101F6E'};
+function setMode(m){
+  mode=m;
+  // bg tint
+  document.getElementById('page-bg').style.background=BG[m];
+  // button states
+  document.getElementById('mb-co').className='mode-btn'+(m==='companies'?' active-co':'');
+  document.getElementById('mb-ed').className='mode-btn'+(m==='colleges'?' active-ed':'');
+  document.getElementById('mb-all').className='mode-btn'+(m==='all'?' active-all':'');
+  // filter automations + scroll
+  filterAuto(m,null);
+  const afts=document.querySelectorAll('.aft');
+  afts.forEach(b=>{b.classList.toggle('active',b.dataset.filter===m||(m==='all'&&b.dataset.filter==='all'));});
+  setTimeout(()=>document.getElementById('s-automations')?.scrollIntoView({behavior:'smooth'}),300);
 }
 
 /* ══════════════════════════════════════════════
-   CUSTOM MODAL
+   AUTOMATIONS RENDER
 ══════════════════════════════════════════════ */
-function openCustom(){document.getElementById('custom-overlay').classList.add('show');document.body.style.overflow='hidden';}
-function closeCustomModal(){document.getElementById('custom-overlay').classList.remove('show');document.body.style.overflow='';}
-function closeCustomOut(e){if(e.target===document.getElementById('custom-overlay'))closeCustomModal();}
-function submitCustom(){
-  const c=document.getElementById('cust-contact').value.trim();
-  if(!c){alert('אנא הזינו פרטי קשר');return;}
-  document.getElementById('custom-form-wrap').style.display='none';
-  document.getElementById('custom-success').style.display='block';
+function filterAuto(filter,btn){
+  if(btn){document.querySelectorAll('.aft').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  mode=filter;renderAuto();
 }
-
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeInfo();closeContact();closeCustomModal();}});
+function renderAuto(){
+  let cats=[];
+  if(mode==='all'){cats=[...CATS.companies,...CATS.colleges];}
+  else if(mode==='companies'){cats=CATS.companies;}
+  else{cats=CATS.colleges;}
+  document.getElementById('auto-grid').innerHTML=cats.map(c=>{
+    const name=lang==='he'?c.he:c.en;
+    const items=(lang==='he'?c.ihe:c.ien).map(it=>`<span class="acc-item">${it}</span>`).join('');
+    return`<div class="auto-cat-card reveal">
+      <div class="acc-head"><div class="acc-ico">${c.icon}</div><div><div class="acc-name">${name}</div><div class="acc-count">${(lang==='he'?c.ihe:c.ien).length} ${lang==='he'?'פתרונות':'solutions'}</div></div></div>
+      <div class="acc-items">${items}</div>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.auto-cat-card.reveal').forEach(el=>ro.observe(el));
+}
+renderAuto();
 
 /* ══════════════════════════════════════════════
-   WIZARD STATE
+   WIZARD
 ══════════════════════════════════════════════ */
-let wizType='colleges',wizPicked=[],wizStep=1;
-let wizChartTime=null,wizChartRoi=null;
-
-function openWizard(){
-  document.getElementById('wiz-overlay').classList.add('show');
-  document.body.style.overflow='hidden';
-  goStep(1);
-}
-function closeWizard(){
-  document.getElementById('wiz-overlay').classList.remove('show');
-  document.body.style.overflow='';
-}
-
-function setStepUI(s){
+function openWizard(){document.getElementById('wiz-ov').classList.add('show');document.body.style.overflow='hidden';goStep(1);}
+function closeWizard(){document.getElementById('wiz-ov').classList.remove('show');document.body.style.overflow='';}
+function setWSUI(s){
   for(let i=1;i<=4;i++){
-    const ws=document.getElementById('ws'+i);
-    ws.classList.remove('active','done');
-    if(i<s)ws.classList.add('done');
-    else if(i===s)ws.classList.add('active');
-    if(i<4){const wl=document.getElementById('wl'+i);wl.classList.toggle('done',i<s);}
+    const w=document.getElementById('ws'+i);
+    w.classList.remove('active','done');
+    if(i<s)w.classList.add('done');else if(i===s)w.classList.add('active');
+    if(i<4)document.getElementById('wl'+i).classList.toggle('done',i<s);
   }
 }
-
 function goStep(n){
-  wizStep=n;
-  setStepUI(n);
-  [1,2,3,4].forEach(i=>document.getElementById('wstep'+i).style.display=i===n?'block':'none');
-  if(n===2)buildAutoGrid();
+  wizStep=n;setWSUI(n);
+  [1,2,3,4].forEach(i=>document.getElementById('wz'+i).style.display=i===n?'block':'none');
+  if(n===2)buildWizGrid();
   if(n===3)buildResults();
-  document.getElementById('wiz-overlay').scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('wiz-ov').scrollTo({top:0,behavior:'smooth'});
 }
-
 function pickType(type,el){
   wizType=type;wizPicked=[];
-  document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('sel'));
+  document.querySelectorAll('.tcard').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
-  setTimeout(()=>goStep(2),350);
+  setTimeout(()=>goStep(2),340);
 }
-
-function buildAutoGrid(){
-  const items=AUTOS.filter(a=>a.theme===wizType);
-  document.getElementById('wiz-auto-grid').innerHTML=items.map(a=>`
-    <div class="auto-card ${wizPicked.includes(a.id)?'picked':''}" id="ac-${a.id}" onclick="toggleAuto('${a.id}')">
-      <div class="ac-check"></div>
-      <span class="ac-ico">${a.icon}</span>
-      <div class="ac-name">${a.title}</div>
-      <div class="ac-time">חוסך ~${a.hrs} שעות/חודש</div>
+function buildWizGrid(){
+  const cats=CATS[wizType];
+  document.getElementById('wiz-grid').innerHTML=cats.map(c=>`
+    <div class="acard${wizPicked.includes(c.id)?' picked':''}" id="ac-${c.id}" onclick="toggleA('${c.id}')">
+      <div class="ck"></div>
+      <span class="ac-ic">${c.icon}</span>
+      <div class="ac-n">${lang==='he'?c.he:c.en}</div>
+      <div class="ac-t">~${c.hrs}h/${lang==='he'?'חודש':'mo'}</div>
     </div>`).join('');
-  updatePickedCount();
+  updateCnt();
 }
-
-function toggleAuto(id){
+function toggleA(id){
   const idx=wizPicked.indexOf(id);
   if(idx>=0)wizPicked.splice(idx,1);else wizPicked.push(id);
   const el=document.getElementById('ac-'+id);
-  el.classList.toggle('picked',wizPicked.includes(id));
-  updatePickedCount();
+  el?.classList.toggle('picked',wizPicked.includes(id));
+  updateCnt();
 }
-
-function updatePickedCount(){
-  document.getElementById('picked-count').textContent=wizPicked.length;
-  document.getElementById('btn-to-3').disabled=wizPicked.length===0;
+function updateCnt(){
+  document.getElementById('pick-cnt').textContent=wizPicked.length;
+  document.getElementById('btn3').disabled=wizPicked.length===0;
 }
-
-/* ══════════════════════════════════════════════
-   WIZARD RESULTS
-══════════════════════════════════════════════ */
 function buildResults(){
-  const selected=AUTOS.filter(a=>wizPicked.includes(a.id));
-  const totalHrs=selected.reduce((s,a)=>s+a.hrs,0);
-  const priceLo=selected.reduce((s,a)=>s+a.price_lo,0);
-  const priceHi=selected.reduce((s,a)=>s+a.price_hi,0);
-
-  // Price
-  document.getElementById('price-range').textContent=`₪${priceLo.toLocaleString()} – ₪${priceHi.toLocaleString()}`;
-
-  // Selected items list
-  document.getElementById('sel-items-list').innerHTML=selected.map(a=>`
-    <div class="sel-item">${a.icon} ${a.title}</div>`).join('');
-
-  // Charts
-  if(wizChartTime){wizChartTime.destroy();}
-  if(wizChartRoi){wizChartRoi.destroy();}
-
-  const avgCostPerHr=120; // ₪ per hour
-  const monthlySaving=totalHrs*avgCostPerHr;
-  const avgInvestment=(priceLo+priceHi)/2;
-  const monthsToROI=Math.ceil(avgInvestment/monthlySaving);
-
-  // Time saved chart - horizontal bar
-  const labels=selected.slice(0,6).map(a=>a.title.slice(0,18)+(a.title.length>18?'...':''));
-  const dataAfter=selected.slice(0,6).map(a=>Math.max(1,a.hrs*0.1));
-  const dataBefore=selected.slice(0,6).map(a=>a.hrs);
-
-  wizChartTime=new Chart(document.getElementById('wiz-chart-time'),{
-    type:'bar',
-    data:{
-      labels,
-      datasets:[
-        {label:'לפני (שעות/חודש)',data:dataBefore,backgroundColor:'rgba(239,68,68,.45)',borderColor:'rgba(239,68,68,.8)',borderWidth:1.5,borderRadius:5},
-        {label:'אחרי אוטומציה',data:dataAfter,backgroundColor:'rgba(16,185,129,.45)',borderColor:'rgba(16,185,129,.8)',borderWidth:1.5,borderRadius:5}
-      ]
-    },
-    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-      plugins:{legend:{position:'bottom',labels:{color:'rgba(255,255,255,.55)',font:{size:11},padding:10}}},
-      scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(255,255,255,.45)'}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(255,255,255,.5)',font:{size:11}}}}}
-  });
-
-  // ROI doughnut
-  const m6saving=monthlySaving*6;
-  const netGain=Math.max(0,m6saving-avgInvestment);
-  wizChartRoi=new Chart(document.getElementById('wiz-chart-roi'),{
-    type:'doughnut',
-    data:{
-      labels:['השקעה','חיסכון ב-6 חודשים','רווח נקי'],
-      datasets:[{data:[avgInvestment,m6saving,netGain],
-        backgroundColor:['rgba(79,142,247,.75)','rgba(245,158,11,.7)','rgba(16,185,129,.75)'],
-        borderColor:'rgba(0,16,62,.9)',borderWidth:3,hoverOffset:6}]
-    },
-    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
-      plugins:{legend:{position:'bottom',labels:{color:'rgba(255,255,255,.55)',font:{size:11},padding:8,boxWidth:10}}}}
-  });
+  const sel=CATS[wizType].filter(c=>wizPicked.includes(c.id));
+  const hrs=sel.reduce((s,c)=>s+c.hrs,0);
+  const plo=sel.reduce((s,c)=>s+c.plo,0);
+  const phi=sel.reduce((s,c)=>s+c.phi,0);
+  document.getElementById('price-r').textContent=`₪${plo.toLocaleString()} – ₪${phi.toLocaleString()}`;
+  document.getElementById('sel-list').innerHTML=sel.map(c=>`<div class="sitem">${c.icon} ${lang==='he'?c.he:c.en}</div>`).join('');
+  if(wch1)wch1.destroy();if(wch2)wch2.destroy();
+  const labels=sel.map(c=>(lang==='he'?c.he:c.en).slice(0,16));
+  const before=sel.map(c=>c.hrs);
+  const after=sel.map(c=>Math.max(1,Math.round(c.hrs*.08)));
+  const co={color:'rgba(255,255,255,.4)',font:{family:'Heebo',size:11}};
+  wch1=new Chart(document.getElementById('wch1'),{type:'bar',data:{labels,datasets:[
+    {label:lang==='he'?'לפני':'Before',data:before,backgroundColor:'rgba(239,68,68,.4)',borderColor:'rgba(239,68,68,.7)',borderWidth:1.5,borderRadius:5},
+    {label:lang==='he'?'אחרי':'After',data:after,backgroundColor:'rgba(16,185,129,.4)',borderColor:'rgba(16,185,129,.7)',borderWidth:1.5,borderRadius:5}
+  ]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{position:'bottom',labels:{...co,padding:10}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:co},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{...co,font:{family:'Heebo',size:10}}}}}});
+  const inv=(plo+phi)/2;const msave=hrs*120;const gain=Math.max(0,msave*6-inv);
+  wch2=new Chart(document.getElementById('wch2'),{type:'doughnut',data:{labels:[lang==='he'?'השקעה':'Investment',lang==='he'?'חיסכון 6 חודש':'6mo saving',lang==='he'?'רווח נקי':'Net gain'],datasets:[{data:[inv,msave*6,gain],backgroundColor:['rgba(40,112,246,.75)','rgba(245,158,11,.7)','rgba(16,185,129,.75)'],borderColor:'rgba(0,13,80,.9)',borderWidth:3,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{...co,padding:8,boxWidth:10}}}}});
+}
+function submitW(){
+  const n=document.getElementById('wn').value.trim(),e=document.getElementById('we').value.trim();
+  if(!n||!e){alert(lang==='he'?'אנא מלאו שם ואימייל':'Please fill name and email');return;}
+  document.getElementById('wf-wrap').style.display='none';
+  document.getElementById('wiz-ok').style.display='block';
 }
 
 /* ══════════════════════════════════════════════
-   WIZARD SUBMIT
+   MODALS
 ══════════════════════════════════════════════ */
-function submitWizard(){
-  const n=document.getElementById('wf-name').value.trim(),em=document.getElementById('wf-email').value.trim();
-  if(!n||!em){alert('אנא מלאו שם ואימייל');return;}
-  document.getElementById('wiz-form-wrap').style.display='none';
-  document.getElementById('wiz-success').style.display='block';
+function openContact(){document.getElementById('co-ov').classList.add('show');document.body.style.overflow='hidden';}
+function closeContact(){document.getElementById('co-ov').classList.remove('show');document.body.style.overflow='';}
+function submitCo(){
+  const n=document.getElementById('cn').value.trim(),e=document.getElementById('ce').value.trim();
+  if(!n||!e){alert(lang==='he'?'אנא מלאו שם ואימייל':'Please fill name and email');return;}
+  document.getElementById('co-fw').style.display='none';document.getElementById('co-ok').style.display='block';
 }
+function openCustom(){document.getElementById('cu-ov').classList.add('show');document.body.style.overflow='hidden';}
+function closeCustom(){document.getElementById('cu-ov').classList.remove('show');document.body.style.overflow='';}
+function submitCu(){
+  if(!document.getElementById('cuc').value.trim()){alert(lang==='he'?'אנא הזינו פרטי קשר':'Please enter contact info');return;}
+  document.getElementById('cu-fw').style.display='none';document.getElementById('cu-ok').style.display='block';
+}
+document.getElementById('co-ov').addEventListener('click',e=>{if(e.target===document.getElementById('co-ov'))closeContact();});
+document.getElementById('cu-ov').addEventListener('click',e=>{if(e.target===document.getElementById('cu-ov'))closeCustom();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeContact();closeCustom();closeWizard();}});
 </script>
 </body>
 </html>
